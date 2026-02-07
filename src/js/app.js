@@ -36,7 +36,7 @@ import {
   renderPartsTable,
   showResults,
   exportPartsToCSV
-} from './ui.js';
+} from './ui/index.js';
 
 // Application State
 let currentProject = null;
