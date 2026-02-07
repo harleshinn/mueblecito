@@ -1,0 +1,139 @@
+@use 'variables' as *;
+
+// Module Container Block
+.modules {
+  margin-top: $spacing-lg;
+  
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-md;
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+  }
+  
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+  
+  &__empty {
+    text-align: center;
+    padding: $spacing-xl;
+    color: $text-muted;
+    background: $bg-color;
+    border: 1px dashed $border-color;
+    border-radius: $border-radius;
+  }
+}
+
+// Module Card Block
+.module-card {
+  background: $bg-color;
+  border-bottom: 1px solid $border-color;
+  padding: $spacing-xs;
+  transition: opacity 0.2s ease;
+  display: flex;
+  
+  &--excluded {
+    opacity: 0.5;
+    background: repeating-linear-gradient(
+      45deg,
+      $bg-color,
+      $bg-color 10px,
+      rgba($border-color, 0.3) 10px,
+      rgba($border-color, 0.3) 20px
+    );
+  }
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: $spacing-sm;
+    width: 30%;
+    gap: 20px;
+  }
+
+  &__toggle {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    cursor: pointer;
+    
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+  }
+
+  &__name {
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  &__type {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+
+    &--lower {
+      background: #fce7f3;
+      color: #be185d;
+    }
+
+    &--upper {
+      background: #ede9fe;
+      color: #7c3aed;
+    }
+  }
+
+  &__details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: $spacing-sm;
+    margin-top: $spacing-sm;
+    font-size: 0.875rem;
+    color: $text-muted;
+    flex-grow: 1;
+
+    span {
+      display: block;
+    }
+
+    strong {
+      color: $text-color;
+    }
+  }
+
+  &__actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-sm;
+    width: 20%;
+  }
+}
+
+// Countertop Options
+.countertop-options {
+  padding: $spacing-md;
+  background: $bg-color;
+  border-radius: $border-radius;
+  border: 1px solid $border-color;
+  margin-top: $spacing-sm;
+}
+
+// Lower Cabinet Options
+.lower-cabinet-options {
+  &.hidden {
+    display: none;
+  }
+}

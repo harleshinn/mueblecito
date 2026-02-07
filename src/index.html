@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mueblecito - MDF Cut Plan Generator</title>
+</head>
+<body>
+  <div id="app" class="app">
+    <header class="app__header">
+      <h1>Mueblecito</h1>
+      <p class="app__subtitle">MDF Modular Cabinet Cut Plan Generator</p>
+    </header>
+
+    <main class="app__main">
+      <!-- Project Selection -->
+      <section class="section project-section">
+        <div class="section__header">
+          <h2>Projects</h2>
+          <button id="btn-new-project" class="btn btn--primary">+ New Project</button>
+        </div>
+        <div class="project-list" id="project-list">
+          <!-- Projects will be rendered here -->
+        </div>
+      </section>
+
+      <!-- Project Editor (hidden by default) -->
+      <section class="section project-editor hidden" id="project-editor">
+        <div class="section__header">
+          <h2 id="project-title">Project Name</h2>
+          <div class="btn-group">
+            <button id="btn-edit-project" class="btn btn--secondary">Edit Settings</button>
+            <button id="btn-back-projects" class="btn btn--text">← Back to Projects</button>
+          </div>
+        </div>
+
+        <!-- Project Settings Modal -->
+        <div class="modal hidden" id="project-settings-modal">
+          <div class="modal__content">
+            <div class="modal__header">
+              <h3>Project Settings</h3>
+              <button class="btn btn--close" id="btn-close-project-settings">&times;</button>
+            </div>
+            <form id="project-settings-form">
+              <div class="form-group">
+                <label for="project-name">Project Name</label>
+                <input type="text" id="project-name" required>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="default-countertop-thickness">Default Countertop Thickness (mm)</label>
+                  <input type="number" id="default-countertop-thickness" value="0" min="0" step="1">
+                </div>
+                <div class="form-group">
+                  <label for="default-leg-height">Default Leg Height (mm)</label>
+                  <input type="number" id="default-leg-height" value="100" min="0" step="1">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="panel-discard-margin">Panel Discard Margin (mm)</label>
+                  <input type="number" id="panel-discard-margin" value="15" min="0" step="1">
+                </div>
+                <div class="form-group">
+                  <label for="kerf-width">Kerf Width (mm)</label>
+                  <input type="number" id="kerf-width" value="3" min="0" step="0.5">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="drawer-slide-clearance">Drawer Slide Clearance per side (mm)</label>
+                  <input type="number" id="drawer-slide-clearance" value="25" min="0" step="1">
+                </div>
+              </div>
+              
+              <fieldset class="form-fieldset">
+                <legend>Panel Prices (per full panel)</legend>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="panel-price-18">18 mm Panel</label>
+                    <input type="number" id="panel-price-18" value="0" min="0" step="0.01">
+                  </div>
+                  <div class="form-group">
+                    <label for="panel-price-5.5">5.5 mm Panel</label>
+                    <input type="number" id="panel-price-5.5" value="0" min="0" step="0.01">
+                  </div>
+                  <div class="form-group">
+                    <label for="panel-price-3">3 mm Panel</label>
+                    <input type="number" id="panel-price-3" value="0" min="0" step="0.01">
+                  </div>
+                </div>
+              </fieldset>
+              
+              <div class="form-actions">
+                <button type="submit" class="btn btn--primary">Save Settings</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Modules List -->
+        <div class="modules">
+          <div class="modules__header">
+            <h3>Modules</h3>
+            <button id="btn-add-module" class="btn btn--primary">+ Add Module</button>
+          </div>
+          <div class="modules__list" id="modules-list">
+            <!-- Module items will be rendered here -->
+          </div>
+        </div>
+
+        <!-- Module Form Modal -->
+        <div class="modal hidden" id="module-modal">
+          <div class="modal__content modal__content--large">
+            <div class="modal__header">
+              <h3 id="module-modal-title">Add Module</h3>
+              <button class="btn btn--close" id="btn-close-module">&times;</button>
+            </div>
+            <form id="module-form">
+              <input type="hidden" id="module-id">
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="module-name">Name</label>
+                  <input type="text" id="module-name" required>
+                </div>
+                <div class="form-group">
+                  <label for="module-type">Type</label>
+                  <select id="module-type" required>
+                    <option value="lower">Lower Cabinet</option>
+                    <option value="upper">Upper Cabinet</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="module-quantity">Quantity</label>
+                  <input type="number" id="module-quantity" value="1" min="1" step="1" required>
+                </div>
+              </div>
+
+              <fieldset class="form-fieldset">
+                <legend>Dimensions (mm)</legend>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="module-width">Width</label>
+                    <input type="number" id="module-width" required min="1" step="1">
+                  </div>
+                  <div class="form-group">
+                    <label for="module-depth">Depth</label>
+                    <input type="number" id="module-depth" required min="1" step="1">
+                  </div>
+                  <div class="form-group">
+                    <label for="module-height">Total Height</label>
+                    <input type="number" id="module-height" required min="1" step="1">
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="form-fieldset lower-cabinet-options">
+                <legend>Lower Cabinet Options</legend>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="module-leg-height">Leg Height (mm)</label>
+                    <input type="number" id="module-leg-height" value="100" min="0" step="1">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>
+                      <input type="checkbox" id="module-has-countertop" checked>
+                      Has Countertop
+                    </label>
+                  </div>
+                </div>
+                <div class="countertop-options" id="countertop-options">
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="module-countertop-thickness">Countertop Thickness (mm)</label>
+                      <input type="number" id="module-countertop-thickness" value="0" min="0" step="1">
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="form-fieldset">
+                <legend>Panel Thicknesses (mm)</legend>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="module-structural-thickness">Structural Panels</label>
+                    <select id="module-structural-thickness">
+                      <option value="18" selected>18 mm</option>
+                      <option value="5.5">5.5 mm</option>
+                      <option value="3">3 mm</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="module-back-thickness">Back Panel</label>
+                    <select id="module-back-thickness">
+                      <option value="3" selected>3 mm</option>
+                      <option value="5.5">5.5 mm</option>
+                      <option value="18">18 mm</option>
+                    </select>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="form-fieldset">
+                <legend>Back Panel</legend>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>
+                      <input type="checkbox" id="module-has-back-panel" checked>
+                      Has Back Panel
+                    </label>
+                  </div>
+                </div>
+                <div id="back-panel-options">
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="module-back-type">Back Panel Placement</label>
+                      <select id="module-back-type">
+                        <option value="inset" selected>Inset (inside the box)</option>
+                        <option value="external">External (mounted on back)</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="form-fieldset">
+                <legend>Box Configuration</legend>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>
+                      <input type="checkbox" id="module-has-top" checked>
+                      Has Top Panel
+                    </label>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="form-fieldset">
+                <legend>Stretchers</legend>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>
+                      <input type="checkbox" id="module-has-top-stretcher">
+                      Top Stretcher
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label>
+                      <input type="checkbox" id="module-has-bottom-stretcher">
+                      Bottom Stretcher
+                    </label>
+                  </div>
+                </div>
+                <div class="stretcher-options hidden" id="stretcher-options">
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="module-stretcher-height">Height (mm)</label>
+                      <input type="number" id="module-stretcher-height" value="80" min="20" step="1">
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="form-fieldset">
+                <legend>Doors</legend>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>
+                      <input type="checkbox" id="module-has-doors">
+                      Has Doors
+                    </label>
+                  </div>
+                </div>
+                <div class="door-options hidden" id="door-options">
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="module-door-gap">Door Gap (mm)</label>
+                      <input type="number" id="module-door-gap" value="2" min="0" step="0.5">
+                    </div>
+                  </div>
+                  <div class="door-list-header">
+                    <span>#</span>
+                    <span>Width (mm)</span>
+                    <span>Height (mm)</span>
+                    <span></span>
+                  </div>
+                  <div class="door-list" id="door-list"></div>
+                  <button type="button" class="btn btn--secondary" id="btn-add-door">+ Add Door</button>
+                </div>
+              </fieldset>
+
+              <fieldset class="form-fieldset">
+                <legend>Cajones</legend>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>
+                      <input type="checkbox" id="module-has-drawers">
+                      Tiene cajones
+                    </label>
+                  </div>
+                </div>
+                <div class="drawer-options hidden" id="drawer-options">
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="module-drawer-slide-clearance">Correderas (mm)</label>
+                      <input type="number" id="module-drawer-slide-clearance" value="25" min="0" step="1">
+                    </div>
+                    <div class="form-group">
+                      <label for="module-drawer-bottom-thickness">Fondo del cajón</label>
+                      <select id="module-drawer-bottom-thickness">
+                        <option value="3" selected>3 mm</option>
+                        <option value="5.5">5.5 mm</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="module-drawer-spacing">Separación vertical (mm)</label>
+                      <input type="number" id="module-drawer-spacing" value="3" min="0" step="1">
+                    </div>
+                  </div>
+                  <div class="drawer-list-header">
+                    <span>Cajones</span>
+                    <span class="drawer-remaining-height" id="drawer-remaining-height"></span>
+                    <button type="button" class="btn btn--secondary btn--small" id="btn-add-drawer">+ Agregar cajón</button>
+                  </div>
+                  <div class="drawer-list" id="drawer-list">
+                    <!-- Drawer items will be added here dynamically -->
+                  </div>
+                </div>
+              </fieldset>
+
+              <div class="form-actions">
+                <button type="button" class="btn btn--text" id="btn-cancel-module">Cancelar</button>
+                <button type="submit" class="btn btn--primary">Guardar Modulo</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-container">
+          <div class="results-header">
+            <h3>Resultados del plan de corte</h3>
+            <button id="btn-generate" class="btn btn--success">Generar plan de corte</button>
+          </div>
+          
+          <div class="results-content hidden" id="results-content">
+            <!-- Panel Summary -->
+            <div class="panel-summary" id="panel-summary">
+              <!-- Panel count will be rendered here -->
+            </div>
+
+            <!-- Panel Diagrams -->
+            <div class="panel-diagrams-container">
+              <h4>Diagrama de corte</h4>
+              <div class="panel-diagrams" id="panel-diagrams">
+                <!-- Panel diagrams will be rendered here -->
+              </div>
+            </div>
+
+            <!-- Parts Table -->
+            <div class="parts-table-container">
+              <div class="parts-table-header">
+                <h4>Despiece</h4>
+                <button class="btn btn--secondary" id="btn-export-csv">Exportar a CSV</button>
+              </div>
+              <table class="parts-table" id="parts-table">
+                <thead>
+                  <tr>
+                    <th>Modulo</th>
+                    <th>Nombre pieza</th>
+                    <th>Cantidad</th>
+                    <th>Ancho (mm)</th>
+                    <th>Largo (mm)</th>
+                    <th>Espesor (mm)</th>
+                  </tr>
+                </thead>
+                <tbody id="parts-table-body">
+                  <!-- Parts will be rendered here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app__footer">
+      <p>&copy; 2026 Mueblecito - Workshop-Realistic MDF Cut Plans</p>
+    </footer>
+  </div>
+</body>
+</html>

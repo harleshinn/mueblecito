@@ -1,0 +1,67 @@
+@use 'variables' as *;
+
+// App Block
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  
+  &__header {
+    background: linear-gradient(135deg, $primary-color, $primary-hover);
+    color: white;
+    padding: $spacing-lg $spacing-xl;
+    text-align: center;
+    box-shadow: $shadow;
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: $spacing-xs;
+    }
+  }
+  
+  &__subtitle {
+    opacity: 0.9;
+    font-size: 1rem;
+  }
+  
+  &__main {
+    flex: 1;
+    padding: $spacing-xl;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  
+  &__footer {
+    background: $card-bg;
+    border-top: 1px solid $border-color;
+    padding: $spacing-md $spacing-xl;
+    text-align: center;
+    color: $text-muted;
+    font-size: 0.875rem;
+  }
+}
+
+// Section Block
+.section {
+  background: $card-bg;
+  border-radius: $border-radius;
+  box-shadow: $shadow;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-lg;
+    padding-bottom: $spacing-md;
+    border-bottom: 1px solid $border-color;
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+  }
+}

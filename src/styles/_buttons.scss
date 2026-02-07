@@ -1,0 +1,94 @@
+@use 'variables' as *;
+
+// Button Block
+.btn {
+  margin: 10px 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-sm $spacing-md;
+  border: none;
+  border-radius: $border-radius;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  // Modifiers
+  &--primary {
+    background: $primary-color;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background: $primary-hover;
+    }
+  }
+  
+  &--secondary {
+    background: $secondary-color;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background: $secondary-hover;
+    }
+  }
+  
+  &--success {
+    background: $success-color;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background: $success-hover;
+    }
+  }
+  
+  &--danger {
+    background: $danger-color;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background: $danger-hover;
+    }
+  }
+  
+  &--text {
+    background: transparent;
+    color: $primary-color;
+    padding: $spacing-sm;
+
+    &:hover:not(:disabled) {
+      background: rgba($primary-color, 0.1);
+    }
+  }
+  
+  &--small {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+  }
+  
+  &--close {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: $text-muted;
+    line-height: 1;
+    padding: $spacing-xs;
+
+    &:hover {
+      color: $text-color;
+    }
+  }
+}
+
+// Button Group Block
+.btn-group {
+  display: flex;
+  gap: $spacing-sm;
+}

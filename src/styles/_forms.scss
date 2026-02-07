@@ -1,0 +1,387 @@
+@use 'variables' as *;
+
+// Form Block
+.form {
+  padding: $spacing-lg;
+  
+  &__group {
+    margin-bottom: $spacing-md;
+
+    label {
+      display: block;
+      margin-bottom: $spacing-xs;
+      font-weight: 500;
+      font-size: 0.875rem;
+    }
+
+    small {
+      display: block;
+      margin-top: $spacing-xs;
+      color: $text-muted;
+      font-size: 0.75rem;
+    }
+  }
+  
+  &__row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: $spacing-md;
+  }
+  
+  &__fieldset {
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    padding: $spacing-md;
+    margin-bottom: $spacing-md;
+
+    legend {
+      padding: 0 $spacing-sm;
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: $text-muted;
+    }
+  }
+  
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: $spacing-sm;
+    margin-top: $spacing-lg;
+    padding-top: $spacing-md;
+    border-top: 1px solid $border-color;
+  }
+}
+
+// Legacy form classes for compatibility
+form {
+  padding: $spacing-lg;
+}
+
+.form-group {
+  margin-bottom: $spacing-md;
+
+  label {
+    display: block;
+    margin-bottom: $spacing-xs;
+    font-weight: 500;
+    font-size: 0.875rem;
+  }
+
+  small {
+    display: block;
+    margin-top: $spacing-xs;
+    color: $text-muted;
+    font-size: 0.75rem;
+  }
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: $spacing-md;
+}
+
+.form-fieldset {
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  padding: $spacing-md;
+  margin-bottom: $spacing-md;
+
+  legend {
+    padding: 0 $spacing-sm;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: $text-muted;
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: $spacing-sm;
+  margin-top: $spacing-lg;
+  padding-top: $spacing-md;
+  border-top: 1px solid $border-color;
+}
+
+// Form inputs
+input[type="text"],
+input[type="number"],
+select {
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  font-size: 0.875rem;
+  transition: border-color 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+  }
+}
+
+input[type="checkbox"] {
+  margin-right: $spacing-sm;
+}
+
+// Drawer List Block
+.drawer-list {
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: $bg-color;
+  
+  &__header {
+    display: grid;
+    grid-template-columns: auto 1fr 1fr auto;
+    gap: $spacing-sm;
+    padding: $spacing-xs $spacing-sm;
+    background-color: rgba($primary-color, 0.1);
+    border-radius: $border-radius $border-radius 0 0;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: $text-muted;
+    
+    span:first-child {
+      min-width: 30px;
+    }
+  }
+  
+  &__row {
+    display: grid;
+    grid-template-columns: auto 1fr 1fr auto;
+    gap: $spacing-sm;
+    padding: $spacing-xs $spacing-sm;
+    align-items: center;
+    border-bottom: 1px solid $border-color;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    &:hover {
+      background-color: rgba($primary-color, 0.05);
+    }
+  }
+  
+  &__number {
+    min-width: 30px;
+    font-weight: 500;
+    color: $text-muted;
+    text-align: center;
+  }
+  
+  &__field input {
+    width: 100%;
+    padding: $spacing-xs;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    font-size: 0.9rem;
+    
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+    }
+  }
+}
+
+// Legacy drawer classes for compatibility
+.drawer-options {
+  margin-top: $spacing-md;
+  padding-top: $spacing-md;
+  border-top: 1px dashed $border-color;
+}
+
+.drawer-list-header {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-xs $spacing-sm;
+  background-color: rgba($primary-color, 0.1);
+  border-radius: $border-radius $border-radius 0 0;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: $text-muted;
+  
+  span:first-child {
+    min-width: 30px;
+  }
+}
+
+.drawer-remaining-height {
+  flex: 1;
+  text-align: center;
+  font-size: 0.8rem;
+  color: $text-muted;
+  
+  &--error {
+    color: #dc2626;
+    font-weight: 600;
+  }
+}
+
+.drawer-row {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr 1fr auto;
+  gap: $spacing-sm;
+  padding: $spacing-xs $spacing-sm;
+  align-items: center;
+  border-bottom: 1px solid $border-color;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  &:hover {
+    background-color: rgba($primary-color, 0.05);
+  }
+}
+
+.drawer-number {
+  min-width: 30px;
+  font-weight: 500;
+  color: $text-muted;
+  text-align: center;
+}
+
+.drawer-field input {
+  width: 100%;
+  padding: $spacing-xs;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  font-size: 0.9rem;
+  
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+  }
+}
+
+// Door List Block
+.door-list {
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: $bg-color;
+  
+  &__header {
+    display: grid;
+    grid-template-columns: auto 1fr 1fr auto;
+    gap: $spacing-sm;
+    padding: $spacing-xs $spacing-sm;
+    background-color: rgba($primary-color, 0.1);
+    border-radius: $border-radius $border-radius 0 0;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: $text-muted;
+    
+    span:first-child {
+      min-width: 30px;
+    }
+  }
+  
+  &__row {
+    display: grid;
+    grid-template-columns: auto 1fr 1fr auto;
+    gap: $spacing-sm;
+    padding: $spacing-xs $spacing-sm;
+    align-items: center;
+    border-bottom: 1px solid $border-color;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    &:hover {
+      background-color: rgba($primary-color, 0.05);
+    }
+  }
+  
+  &__number {
+    min-width: 30px;
+    font-weight: 500;
+    color: $text-muted;
+    text-align: center;
+  }
+  
+  &__field input {
+    width: 100%;
+    padding: $spacing-xs;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    font-size: 0.9rem;
+    
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+    }
+  }
+}
+
+// Legacy door classes for compatibility
+.door-options {
+  margin-top: $spacing-md;
+  padding-top: $spacing-md;
+  border-top: 1px dashed $border-color;
+}
+
+.door-list-header {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr auto;
+  gap: $spacing-sm;
+  padding: $spacing-xs $spacing-sm;
+  background-color: rgba($primary-color, 0.1);
+  border-radius: $border-radius $border-radius 0 0;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: $text-muted;
+  
+  span:first-child {
+    min-width: 30px;
+  }
+}
+
+.door-row {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr auto;
+  gap: $spacing-sm;
+  padding: $spacing-xs $spacing-sm;
+  align-items: center;
+  border-bottom: 1px solid $border-color;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  &:hover {
+    background-color: rgba($primary-color, 0.05);
+  }
+}
+
+.door-number {
+  min-width: 30px;
+  font-weight: 500;
+  color: $text-muted;
+  text-align: center;
+}
+
+.door-field input {
+  width: 100%;
+  padding: $spacing-xs;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  font-size: 0.9rem;
+  
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+  }
+}
+
+// Stretcher Options
+.stretcher-options {
+  margin-top: $spacing-sm;
+}

@@ -1,0 +1,23 @@
+@use 'variables' as *;
+
+// Responsive Styles
+@media (max-width: 768px) {
+  .app__main {
+    padding: $spacing-md;
+  }
+
+  .section__header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: $spacing-md;
+  }
+
+  .form__row,
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .project-list {
+    grid-template-columns: 1fr;
+  }
+}
