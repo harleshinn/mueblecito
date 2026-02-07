@@ -8,8 +8,16 @@
 <body>
   <div id="app" class="app">
     <header class="app__header">
-      <h1>Mueblecito</h1>
-      <p class="app__subtitle">MDF Modular Cabinet Cut Plan Generator</p>
+      <div class="app__header-content">
+        <h1>Mueblecito</h1>
+        <p class="app__subtitle" data-i18n="appSubtitle">MDF Modular Cabinet Cut Plan Generator</p>
+      </div>
+      <div class="app__header-actions">
+        <select id="language-switcher" class="language-switcher" aria-label="Select language">
+          <option value="es">🇪🇸 Español</option>
+          <option value="en">🇺🇸 English</option>
+        </select>
+      </div>
     </header>
 
     <main class="app__main">

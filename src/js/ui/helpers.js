@@ -3,6 +3,38 @@
  * Shared utilities used across UI modules
  */
 
+import { t } from '../i18n.js';
+import DOMPurify from 'dompurify';
+
+/**
+ * Sanitize HTML string using DOMPurify
+ * Allows safe HTML tags but removes scripts and event handlers
+ * 
+ * @param {string} html - HTML string to sanitize
+ * @returns {string} - Sanitized HTML string
+ */
+export function sanitizeHtml(html) {
+  return DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ['div', 'span', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 
+                   'table', 'thead', 'tbody', 'tr', 'th', 'td',
+                   'button', 'input', 'select', 'option', 'label', 'fieldset', 'legend',
+                   'form', 'strong', 'em', 'br', 'a'],
+    ALLOWED_ATTR: ['class', 'id', 'data-id', 'data-i18n', 'type', 'value', 'checked', 
+                   'min', 'max', 'step', 'placeholder', 'required', 'disabled',
+                   'aria-expanded', 'title', 'style', 'for', 'name', 'selected']
+  });
+}
+
+/**
+ * Safely set innerHTML of an element using DOMPurify sanitization
+ * 
+ * @param {HTMLElement} element - DOM element
+ * @param {string} html - HTML string to set
+ */
+export function setInnerHTML(element, html) {
+  element.innerHTML = sanitizeHtml(html);
+}
+
 /**
  * Escape HTML to prevent XSS
  * 
@@ -69,4 +101,29 @@ export function getPartColor(name) {
   }
   const index = Math.abs(hash) % PART_COLORS.length;
   return PART_COLORS[index];
+}
+
+/**
+ * Translate a part name that may contain a translation key and suffix
+ * Handles formats like "partType.side" or "partType.drawerSide #1"
+ * 
+ * @param {string} partName - Part name (translation key with optional suffix)
+ * @returns {string} - Translated part name
+ */
+export function translatePartName(partName) {
+  if (!partName) return '';
+  
+  // Check if this looks like a translation key (starts with "partType.")
+  if (partName.startsWith('partType.')) {
+    // Check for suffix like " #1"
+    const suffixMatch = partName.match(/^(partType\.[a-zA-Z]+)(.*)$/);
+    if (suffixMatch) {
+      const key = suffixMatch[1];
+      const suffix = suffixMatch[2] || '';
+      return t(key) + suffix;
+    }
+  }
+  
+  // Not a translation key, return as-is
+  return partName;
 }

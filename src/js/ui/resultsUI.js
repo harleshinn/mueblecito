@@ -3,7 +3,8 @@
  * Handles panel summary, cutting diagrams, parts accordion, and CSV export
  */
 import { getElements } from './elements.js';
-import { escapeHtml, formatCurrency, getPartColor } from './helpers.js';
+import { escapeHtml, formatCurrency, getPartColor, translatePartName, setInnerHTML } from './helpers.js';
+import { t } from '../i18n.js';
 
 /**
  * Render panel summary
@@ -16,35 +17,35 @@ export function renderPanelSummary(panelResults) {
   
   let html = `
     <div class="panel-summary-card">
-      <div class="panel-thickness">Total</div>
+      <div class="panel-thickness">${t('total')}</div>
       <div class="panel-count">${totalPanels}</div>
-      <div class="panel-label">Panels Needed</div>
+      <div class="panel-label">${t('panelsNeeded')}</div>
     </div>
   `;
   
   // Usage efficiency card
   html += `
     <div class="panel-summary-card">
-      <div class="panel-thickness">Uso</div>
+      <div class="panel-thickness">${t('usage')}</div>
       <div class="panel-count" style="font-size: 1.25rem;">${overallUsagePercent.toFixed(1)}%</div>
-      <div class="panel-label">Optimización</div>
+      <div class="panel-label">${t('optimization')}</div>
     </div>
   `;
   
   // Per-thickness breakdown with pricing
   for (const [thickness, data] of Object.entries(byThickness)) {
-    let usageInfo = `${data.usagePercent.toFixed(0)}% usado`;
+    let usageInfo = `${data.usagePercent.toFixed(0)}% ${t('used')}`;
     let priceHtml = '';
     
     if (data.pricePerPanel > 0) {
       priceHtml = `
         <div class="panel-pricing">
           <span class="pricing-row">
-            <span>Full (${data.panelCount} paneles):</span>
+            <span>${t('fullPanels')} (${data.panelCount}):</span>
             <span>$${formatCurrency(data.cost)}</span>
           </span>
           <span class="pricing-row pricing-recommended">
-            <span>Por uso:</span>
+            <span>${t('byUsage')}:</span>
             <span>$${formatCurrency(data.proportionalCost)}</span>
           </span>
         </div>
@@ -55,7 +56,7 @@ export function renderPanelSummary(panelResults) {
       <div class="panel-summary-card">
         <div class="panel-thickness">${thickness} mm MDF</div>
         <div class="panel-count">${data.panelCount}</div>
-        <div class="panel-label">${data.partCount} piezas • ${usageInfo}</div>
+        <div class="panel-label">${data.partCount} ${t('pieces')} • ${usageInfo}</div>
         ${priceHtml}
       </div>
     `;
@@ -65,14 +66,14 @@ export function renderPanelSummary(panelResults) {
   if (totalCost > 0) {
     html += `
       <div class="panel-summary-card pricing-card">
-        <div class="panel-thickness">Total General</div>
+        <div class="panel-thickness">${t('grandTotal')}</div>
         <div class="pricing-options">
           <div class="pricing-option">
-            <span class="pricing-label">Paneles Completos (${totalPanels}):</span>
+            <span class="pricing-label">${t('fullPanels')} (${totalPanels}):</span>
             <span class="pricing-value">$${formatCurrency(totalCost)}</span>
           </div>
           <div class="pricing-option pricing-recommended">
-            <span class="pricing-label">Por Uso (${overallUsagePercent.toFixed(0)}%):</span>
+            <span class="pricing-label">${t('byUsage')} (${overallUsagePercent.toFixed(0)}%):</span>
             <span class="pricing-value">$${formatCurrency(totalProportionalCost)}</span>
           </div>
         </div>
@@ -82,13 +83,13 @@ export function renderPanelSummary(panelResults) {
   
   html += `
     <div class="panel-summary-card">
-      <div class="panel-thickness">Tamaño de Stock</div>
+      <div class="panel-thickness">${t('stockSize')}</div>
       <div class="panel-count" style="font-size: 1rem;">${stockDimensions.width} × ${stockDimensions.height}</div>
-      <div class="panel-label">Usable: ${usableDimensions.width} × ${usableDimensions.height} mm</div>
+      <div class="panel-label">${t('usable')}: ${usableDimensions.width} × ${usableDimensions.height} mm</div>
     </div>
   `;
   
-  elements.panelSummary.innerHTML = html;
+  setInnerHTML(elements.panelSummary, html);
 }
 
 /**
@@ -126,7 +127,7 @@ export function renderPanelDiagrams(panelResults) {
     for (const [panelIdx, placements] of Object.entries(panelGroups)) {
       html += `
         <div class="panel-diagram-wrapper">
-          <div class="panel-diagram-label">Panel ${parseInt(panelIdx) + 1}</div>
+          <div class="panel-diagram-label">${t('panel')} ${parseInt(panelIdx) + 1}</div>
           <div class="panel-diagram" style="width: ${maxDiagramWidth}px; height: ${diagramHeight}px;">
       `;
       
@@ -144,8 +145,8 @@ export function renderPanelDiagrams(panelResults) {
         html += `
           <div class="panel-part" 
                style="left: ${x}px; top: ${y}px; width: ${w}px; height: ${h}px; background-color: ${color};"
-               title="${escapeHtml(placement.moduleName)}: ${escapeHtml(placement.partName)} (${dimLabel})${rotatedIcon}">
-            <span class="part-label">${escapeHtml(placement.partName)}</span>
+               title="${escapeHtml(placement.moduleName)}: ${escapeHtml(translatePartName(placement.partName))} (${dimLabel})${rotatedIcon}">
+            <span class="part-label">${escapeHtml(translatePartName(placement.partName))}</span>
             <span class="part-dims">${dimLabel}</span>
           </div>
         `;
@@ -161,10 +162,10 @@ export function renderPanelDiagrams(panelResults) {
   }
   
   if (html === '') {
-    html = '<p class="no-diagrams">No hay partes para mostrar</p>';
+    html = `<p class="no-diagrams">${t('noDiagrams')}</p>`;
   }
   
-  elements.panelDiagrams.innerHTML = html;
+  setInnerHTML(elements.panelDiagrams, html);
 }
 
 /**
@@ -176,9 +177,9 @@ export function renderPartsTable(parts) {
   const elements = getElements();
   
   if (parts.length === 0) {
-    elements.partsAccordion.innerHTML = `
-      <p class="no-parts">No hay partes para mostrar</p>
-    `;
+    setInnerHTML(elements.partsAccordion, `
+      <p class="no-parts">${t('noParts')}</p>
+    `);
     return;
   }
   
@@ -203,24 +204,24 @@ export function renderPartsTable(parts) {
       <div class="accordion-panel ${isFirst ? 'accordion-panel--open' : ''}">
         <button type="button" class="accordion-header" aria-expanded="${isFirst}">
           <span class="accordion-title">${escapeHtml(moduleName)}</span>
-          <span class="accordion-badge">${totalParts} piezas</span>
+          <span class="accordion-badge">${totalParts} ${t('pieces')}</span>
           <span class="accordion-icon"></span>
         </button>
         <div class="accordion-content">
           <table class="parts-table">
             <thead>
               <tr>
-                <th>Nombre pieza</th>
-                <th>Cantidad</th>
-                <th>Ancho (mm)</th>
-                <th>Largo (mm)</th>
-                <th>Espesor (mm)</th>
+                <th>${t('partName')}</th>
+                <th>${t('partQty')}</th>
+                <th>${t('partWidth')}</th>
+                <th>${t('partLength')}</th>
+                <th>${t('partThickness')}</th>
               </tr>
             </thead>
             <tbody>
               ${moduleParts.map(part => `
                 <tr>
-                  <td>${escapeHtml(part.partName)}</td>
+                  <td>${escapeHtml(translatePartName(part.partName))}</td>
                   <td>${part.quantity}</td>
                   <td>${part.width}</td>
                   <td>${part.height}</td>
@@ -235,7 +236,7 @@ export function renderPartsTable(parts) {
     index++;
   }
   
-  elements.partsAccordion.innerHTML = html;
+  setInnerHTML(elements.partsAccordion, html);
   
   // Attach accordion toggle handlers
   elements.partsAccordion.querySelectorAll('.accordion-header').forEach(header => {
@@ -266,17 +267,17 @@ export function showResults() {
  */
 export function exportPartsToCSV(parts, projectName = 'cut-plan') {
   if (!parts || parts.length === 0) {
-    alert('No hay partes para exportar. Genera un plan de corte primero.');
+    alert(t('noPartsToExport'));
     return;
   }
   
   // CSV header
-  const headers = ['Módulo', 'Nombre de la Pieza', 'Cantidad', 'Ancho (mm)', 'Alto (mm)', 'Grosor (mm)'];
+  const headers = [t('module'), t('partName'), t('partQty'), t('partWidth'), t('partLength'), t('partThickness')];
   
   // Build CSV content
   const rows = parts.map(part => [
     `"${part.moduleName.replace(/"/g, '""')}"`,
-    `"${part.partName.replace(/"/g, '""')}"`,
+    `"${translatePartName(part.partName).replace(/"/g, '""')}"`,
     part.quantity,
     part.width,
     part.height,

@@ -1,4 +1,33 @@
+@use 'variables' as *;
+
 // Utility Classes
 .hidden {
   display: none !important;
+}
+
+// Language Switcher
+.language-switcher {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: $border-radius;
+  color: white;
+  padding: $spacing-xs $spacing-sm;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+  
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4);
+  }
+  
+  option {
+    background: $card-bg;
+    color: $text-color;
+  }
 }

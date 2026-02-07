@@ -5,6 +5,8 @@
 
 import { CABINET_TYPES, DEFAULTS } from '../constants.js';
 import { getElements } from './elements.js';
+import { t } from '../i18n.js';
+import { setInnerHTML } from './helpers.js';
 
 /**
  * Show module modal for adding/editing
@@ -15,7 +17,7 @@ import { getElements } from './elements.js';
 export function showModuleModal(module = null, projectSettings = {}) {
   const elements = getElements();
   const isEdit = module !== null;
-  elements.moduleModalTitle.textContent = isEdit ? 'Edit Module' : 'Add Module';
+  elements.moduleModalTitle.textContent = isEdit ? t('editModule') : t('addModule');
   
   // Reset form
   elements.moduleForm.reset();
@@ -204,13 +206,13 @@ export function updateDrawerRemainingHeight() {
   
   // Update display
   if (drawerCount === 0) {
-    elements.drawerRemainingHeight.textContent = `Disponible: ${Math.round(internalHeight)} mm`;
+    elements.drawerRemainingHeight.textContent = `${t('availableHeight')}: ${Math.round(internalHeight)} mm`;
     elements.drawerRemainingHeight.className = 'drawer-remaining-height';
   } else if (remainingHeight >= 0) {
-    elements.drawerRemainingHeight.textContent = `Restante: ${Math.round(remainingHeight)} mm`;
+    elements.drawerRemainingHeight.textContent = `${t('remainingHeight')}: ${Math.round(remainingHeight)} mm`;
     elements.drawerRemainingHeight.className = 'drawer-remaining-height';
   } else {
-    elements.drawerRemainingHeight.textContent = `Excede: ${Math.round(Math.abs(remainingHeight))} mm`;
+    elements.drawerRemainingHeight.textContent = `${t('exceedsHeight')}: ${Math.round(Math.abs(remainingHeight))} mm`;
     elements.drawerRemainingHeight.className = 'drawer-remaining-height drawer-remaining-height--error';
   }
 }
@@ -268,22 +270,22 @@ export function addDrawerRow(height = null, depth = null, boxHeight = null) {
   
   const row = document.createElement('div');
   row.className = 'drawer-row';
-  row.innerHTML = `
+  setInnerHTML(row, `
     <span class="drawer-number">${index}</span>
     <div class="drawer-field">
-      <label>Frente (mm)</label>
+      <label>${t('drawerHeight')}</label>
       <input type="number" class="drawer-height" value="${height || DEFAULTS.DRAWER_HEIGHT}" min="50" step="1">
     </div>
     <div class="drawer-field">
-      <label>Cajón (mm)</label>
+      <label>${t('drawerBoxHeight')}</label>
       <input type="number" class="drawer-box-height" value="${boxHeight || DEFAULTS.DRAWER_BOX_HEIGHT}" min="50" step="1">
     </div>
     <div class="drawer-field">
-      <label>Prof. (mm)</label>
-      <input type="number" class="drawer-depth" value="${depth || ''}" min="50" step="1" placeholder="Auto">
+      <label>${t('drawerDepth')}</label>
+      <input type="number" class="drawer-depth" value="${depth || ''}" min="50" step="1" placeholder="${t('auto')}">
     </div>
     <button type="button" class="btn btn-danger btn-small btn-remove-drawer">×</button>
-  `;
+  `);
   
   // Add event listener for height changes to update remaining height
   row.querySelector('.drawer-height').addEventListener('input', updateDrawerRemainingHeight);
@@ -412,7 +414,7 @@ export function addDoorRow(width = null, height = null) {
   
   const row = document.createElement('div');
   row.className = 'door-row';
-  row.innerHTML = `
+  setInnerHTML(row, `
     <span class="door-number">${index}</span>
     <div class="door-field">
       <input type="number" class="door-width" value="${width}" min="50" step="1">
@@ -421,7 +423,7 @@ export function addDoorRow(width = null, height = null) {
       <input type="number" class="door-height" value="${height}" min="50" step="1">
     </div>
     <button type="button" class="btn btn-danger btn-small btn-remove-door">×</button>
-  `;
+  `);
   
   // Add remove handler
   row.querySelector('.btn-remove-door').addEventListener('click', () => {

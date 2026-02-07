@@ -10,14 +10,26 @@
     background: linear-gradient(135deg, $primary-color, $primary-hover);
     color: white;
     padding: $spacing-lg $spacing-xl;
-    text-align: center;
     box-shadow: $shadow;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
     h1 {
       font-size: 2rem;
       font-weight: 700;
       margin-bottom: $spacing-xs;
     }
+  }
+  
+  &__header-content {
+    text-align: left;
+  }
+  
+  &__header-actions {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
   }
   
   &__subtitle {

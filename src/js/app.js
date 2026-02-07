@@ -9,6 +9,7 @@ import { createProject, createModule, updateProjectTimestamp } from './models.js
 import { loadProjects, saveProject, deleteProject, getProject } from './storage.js';
 import { generateProjectParts } from './partsGenerator.js';
 import { calculateProjectPanels } from './panelCalculations.js';
+import { initLanguage, setLanguage, getCurrentLanguage, t } from './i18n.js';
 import {
   initElements,
   getElements,
@@ -41,13 +42,27 @@ import {
 // Application State
 let currentProject = null;
 let currentParts = null;
+let currentPanelResults = null;
 
 /**
  * Initialize the application
  */
 function init() {
+  // Initialize language
+  initLanguage();
+  
   // Initialize DOM elements
   initElements();
+  
+  // Set language switcher value and apply translations
+  const langSwitcher = document.getElementById('language-switcher');
+  if (langSwitcher) {
+    langSwitcher.value = getCurrentLanguage();
+    langSwitcher.addEventListener('change', handleLanguageChange);
+  }
+  
+  // Apply initial translations
+  updatePageTranslations();
   
   // Load and render projects
   refreshProjectList();
@@ -56,6 +71,88 @@ function init() {
   setupEventListeners();
   
   console.log('Mueblecito initialized');
+}
+
+/**
+ * Handle language change
+ */
+function handleLanguageChange(e) {
+  setLanguage(e.target.value);
+  updatePageTranslations();
+  
+  // Re-render current view
+  if (currentProject) {
+    refreshModulesList();
+    if (currentParts) {
+      renderPartsTable(currentParts);
+    }
+    if (currentPanelResults) {
+      renderPanelSummary(currentPanelResults);
+      renderPanelDiagrams(currentPanelResults);
+    }
+  } else {
+    refreshProjectList();
+  }
+}
+
+/**
+ * Update all translatable elements on the page
+ */
+function updatePageTranslations() {
+  // Update data-i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    el.textContent = t(key);
+  });
+  
+  // Update data-i18n-placeholder elements
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    el.placeholder = t(key);
+  });
+  
+  // Update data-i18n-title elements
+  document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    const key = el.getAttribute('data-i18n-title');
+    el.title = t(key);
+  });
+  
+  // Update specific static elements
+  updateStaticTranslations();
+}
+
+/**
+ * Update static text elements that don't have data-i18n
+ */
+function updateStaticTranslations() {
+  const elements = getElements();
+  
+  // Header & navigation
+  document.querySelector('.app__subtitle')?.setAttribute('data-i18n', 'appSubtitle');
+  
+  // Update button texts
+  if (elements.btnNewProject) elements.btnNewProject.textContent = t('newProject');
+  if (elements.btnBackProjects) elements.btnBackProjects.textContent = t('backToProjects');
+  if (elements.btnEditProject) elements.btnEditProject.textContent = t('editSettings');
+  if (elements.btnAddModule) elements.btnAddModule.textContent = t('addModule');
+  if (elements.btnGenerate) elements.btnGenerate.textContent = t('generateCutPlan');
+  if (elements.btnExportCSV) elements.btnExportCSV.textContent = t('exportToCSV');
+  
+  // Section headers
+  document.querySelector('.project-section h2')?.replaceWith(createTextNode('h2', t('projects')));
+  document.querySelector('.modules__header h3')?.replaceWith(createTextNode('h3', t('modules')));
+  document.querySelector('.results-header h3')?.replaceWith(createTextNode('h3', t('cutPlanResults')));
+  document.querySelector('.panel-diagrams-container h4')?.replaceWith(createTextNode('h4', t('cuttingDiagram')));
+  document.querySelector('.parts-table-header h4')?.replaceWith(createTextNode('h4', t('partsList')));
+}
+
+/**
+ * Helper to create a text node with element type
+ */
+function createTextNode(tag, text) {
+  const el = document.createElement(tag);
+  el.textContent = text;
+  return el;
 }
 
 /**
@@ -426,6 +523,7 @@ function handleGenerateCutPlan() {
   
   // Calculate panels needed
   const panelResults = calculateProjectPanels(parts, currentProject.settings);
+  currentPanelResults = panelResults; // Store for language change re-render
   
   // Render results
   renderPanelSummary(panelResults);

@@ -5,7 +5,8 @@
 
 import { CABINET_TYPES, DEFAULTS } from '../constants.js';
 import { getElements } from './elements.js';
-import { escapeHtml, formatDate } from './helpers.js';
+import { escapeHtml, formatDate, setInnerHTML } from './helpers.js';
+import { t } from '../i18n.js';
 
 /**
  * Render project list
@@ -17,15 +18,15 @@ export function renderProjectList(projects, handlers) {
   const elements = getElements();
   
   if (projects.length === 0) {
-    elements.projectList.innerHTML = `
+    setInnerHTML(elements.projectList, `
       <div class="project-list__empty">
-        <p>No hay proyectos todavía. Creá tu primer proyecto para comenzar.</p>
+        <p>${t('noProjects')}</p>
       </div>
-    `;
+    `);
     return;
   }
   
-  elements.projectList.innerHTML = projects.map(project => {
+  setInnerHTML(elements.projectList, projects.map(project => {
     const modules = project.modules || project.furniture || [];
     const costInfo = project.costInfo || { totalCost: 0, totalProportionalCost: 0, hasPrice: false };
     
@@ -33,7 +34,7 @@ export function renderProjectList(projects, handlers) {
     if (costInfo.hasPrice) {
       costHtml = `
         <div class="project-card__cost">
-          <span class="cost-label">Costo estimado:</span>
+          <span class="cost-label">${t('estimatedCost')}:</span>
           <span class="cost-value">$${costInfo.totalCost.toFixed(2)}</span>
         </div>
       `;
@@ -46,16 +47,16 @@ export function renderProjectList(projects, handlers) {
         ${costHtml}
       </div>
       <div class="project-card__info">
-        <span>${modules.length} module${modules.length !== 1 ? 's' : ''}</span>
-        <span>Updated: ${formatDate(project.updatedAt)}</span>
+        <span>${modules.length} ${t('modules').toLowerCase()}</span>
+        <span>${t('lastModified')}: ${formatDate(project.updatedAt)}</span>
       </div>
       <div class="project-card__actions">
-        <button class="btn btn--primary btn-open-project" data-id="${project.id}">Abrir</button>
-        <button class="btn btn--danger btn-delete-project" data-id="${project.id}">Borrar</button>
+        <button class="btn btn--primary btn-open-project" data-id="${project.id}">${t('edit')}</button>
+        <button class="btn btn--danger btn-delete-project" data-id="${project.id}">${t('delete')}</button>
       </div>
     </div>
   `;
-  }).join('');
+  }).join(''));
   
   // Attach event listeners
   elements.projectList.querySelectorAll('.btn-open-project').forEach(btn => {
@@ -68,7 +69,7 @@ export function renderProjectList(projects, handlers) {
   elements.projectList.querySelectorAll('.btn-delete-project').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      if (confirm('¿Estás seguro de que deseas borrar este proyecto?')) {
+      if (confirm(t('deleteConfirm'))) {
         handlers.onDelete(btn.dataset.id);
       }
     });
@@ -91,15 +92,15 @@ export function renderModulesList(modules, handlers) {
   const elements = getElements();
   
   if (modules.length === 0) {
-    elements.modulesList.innerHTML = `
+    setInnerHTML(elements.modulesList, `
       <div class="modules__empty">
-        <p>No hay módulos todavía. Agrega un módulo para comenzar con tu plan de cortes.</p>
+        <p>${t('noModules')}</p>
       </div>
-    `;
+    `);
     return;
   }
   
-  elements.modulesList.innerHTML = modules.map(item => {
+  setInnerHTML(elements.modulesList, modules.map(item => {
     const isIncluded = item.includeInCalculation !== false;
     const excludedClass = isIncluded ? '' : ' module-card--excluded';
     
@@ -107,28 +108,28 @@ export function renderModulesList(modules, handlers) {
     <div class="module-card${excludedClass}" data-id="${item.id}">
       <div class="module-card__header">
         <span class="module-card__type module-card__type--${item.type}">
-          ${item.type === CABINET_TYPES.LOWER ? 'Bajomesada' : 'Alacena'}
+          ${item.type === CABINET_TYPES.LOWER ? t('lowerCabinet') : t('upperCabinet')}
         </span>
-        <label class="module-card__toggle" title="Include in calculation">
+        <label class="module-card__toggle" title="${t('includeInCalculation')}">
           <input type="checkbox" class="module-include-checkbox" data-id="${item.id}" ${isIncluded ? 'checked' : ''}>
           <span class="module-card__name">${escapeHtml(item.name)}</span>
         </label>
       </div>
       <div class="module-card__details">
-        <span><strong>Cant:</strong> ${item.quantity}</span>
-        <span><strong>Ancho:</strong> ${item.width} mm</span>
-        <span><strong>Profundidad:</strong> ${item.depth} mm</span>
-        <span><strong>Alto:</strong> ${item.height} mm</span>
-        ${item.hasDrawers && item.drawers ? `<span><strong>Cajones:</strong> ${item.drawers.length}</span>` : ''}
-        ${item.hasDoors && item.doors ? `<span><strong>Puertas:</strong> ${item.doors.length}</span>` : ''}
+        <span><strong>${t('quantity')}:</strong> ${item.quantity}</span>
+        <span><strong>${t('width')}:</strong> ${item.width} mm</span>
+        <span><strong>${t('depth')}:</strong> ${item.depth} mm</span>
+        <span><strong>${t('height')}:</strong> ${item.height} mm</span>
+        ${item.hasDrawers && item.drawers ? `<span><strong>${t('drawers')}:</strong> ${item.drawers.length}</span>` : ''}
+        ${item.hasDoors && item.doors ? `<span><strong>${t('doors')}:</strong> ${item.doors.length}</span>` : ''}
       </div>
       <div class="module-card__actions">
-        <button class="btn btn--secondary btn-edit-module" data-id="${item.id}">Editar</button>
-        <button class="btn btn--danger btn-delete-module" data-id="${item.id}">Borrar</button>
+        <button class="btn btn--secondary btn-edit-module" data-id="${item.id}">${t('edit')}</button>
+        <button class="btn btn--danger btn-delete-module" data-id="${item.id}">${t('delete')}</button>
       </div>
     </div>
   `;
-  }).join('');
+  }).join(''));
   
   // Attach event listeners
   elements.modulesList.querySelectorAll('.btn-edit-module').forEach(btn => {
@@ -137,7 +138,7 @@ export function renderModulesList(modules, handlers) {
   
   elements.modulesList.querySelectorAll('.btn-delete-module').forEach(btn => {
     btn.addEventListener('click', () => {
-      if (confirm('¿Estás seguro de que deseas borrar este módulo?')) {
+      if (confirm(t('deleteConfirm'))) {
         handlers.onDelete(btn.dataset.id);
       }
     });

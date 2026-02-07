@@ -4,7 +4,7 @@
  */
 
 // Helpers
-export { escapeHtml, formatDate, formatCurrency, getPartColor } from './helpers.js';
+export { escapeHtml, formatDate, formatCurrency, getPartColor, translatePartName, sanitizeHtml, setInnerHTML } from './helpers.js';
 
 // Elements
 export { initElements, getElements } from './elements.js';

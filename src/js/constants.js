@@ -57,21 +57,21 @@ export const BACK_PANEL_TYPES = {
   EXTERNAL: 'external'
 };
 
-// Part types for labeling
+// Part types for labeling (translation keys)
 export const PART_TYPES = {
-  SIDE: 'Side Panel',
-  TOP: 'Top Panel',
-  BASE: 'Base Panel',
-  BOTTOM: 'Bottom Panel',
-  BACK: 'Back Panel',
-  DOOR: 'Door',
-  STRETCHER_TOP: 'Top Stretcher',
-  STRETCHER_BOTTOM: 'Bottom Stretcher',
-  DRAWER_SIDE: 'Drawer Side',
-  DRAWER_FRONT: 'Drawer Front',
-  DRAWER_BACK: 'Drawer Back',
-  DRAWER_BOTTOM: 'Drawer Bottom',
-  DRAWER_FACE: 'Drawer Face'
+  SIDE: 'partType.side',
+  TOP: 'partType.top',
+  BASE: 'partType.base',
+  BOTTOM: 'partType.bottom',
+  BACK: 'partType.back',
+  DOOR: 'partType.door',
+  STRETCHER_TOP: 'partType.stretcherTop',
+  STRETCHER_BOTTOM: 'partType.stretcherBottom',
+  DRAWER_SIDE: 'partType.drawerSide',
+  DRAWER_FRONT: 'partType.drawerFront',
+  DRAWER_BACK: 'partType.drawerBack',
+  DRAWER_BOTTOM: 'partType.drawerBottom',
+  DRAWER_FACE: 'partType.drawerFace'
 };
 
 // Local storage keys
