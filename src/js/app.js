@@ -305,10 +305,10 @@ function refreshProjectList() {
  * Handle new project creation
  */
 function handleNewProject() {
-  const name = prompt('Enter project name:', 'New Project');
+  const name = prompt(t('enterProjectName'), t('defaultProjectName'));
   if (name === null) return; // Cancelled
   
-  const project = createProject(name.trim() || 'New Project');
+  const project = createProject(name.trim() || t('defaultProjectName'));
   saveProject(project);
   
   // Open the new project

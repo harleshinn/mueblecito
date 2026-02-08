@@ -15,6 +15,8 @@ export const translations = {
     // Projects section
     projects: 'Projects',
     newProject: '+ New Project',
+    enterProjectName: 'Enter project name:',
+    defaultProjectName: 'New Project',
     noProjects: 'No projects yet. Click "New Project" to get started.',
     lastModified: 'Last modified',
     deleteConfirm: 'Are you sure you want to delete this project?',
@@ -177,6 +179,8 @@ export const translations = {
     // Projects section
     projects: 'Proyectos',
     newProject: '+ Nuevo Proyecto',
+    enterProjectName: 'Ingresa el nombre del proyecto:',
+    defaultProjectName: 'Nuevo Proyecto',
     noProjects: 'No hay proyectos. Haz clic en "Nuevo Proyecto" para comenzar.',
     lastModified: 'Última modificación',
     deleteConfirm: '¿Estás seguro de que deseas eliminar este proyecto?',
