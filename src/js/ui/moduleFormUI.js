@@ -7,6 +7,7 @@ import { CABINET_TYPES, DEFAULTS } from '../constants.js';
 import { getElements } from './elements.js';
 import { t } from '../i18n.js';
 import { setInnerHTML } from './helpers.js';
+import { renderCabinet } from '../cabinetRenderer.js';
 
 /**
  * Show module modal for adding/editing
@@ -84,6 +85,13 @@ export function showModuleModal(module = null, projectSettings = {}) {
   updateDrawerOptionsVisibility(elements.moduleHasDrawers.checked);
   
   elements.moduleModal.classList.remove('hidden');
+  
+  // Render 3D preview if editing, after modal is shown
+  if (isEdit) {
+    setTimeout(() => {
+      renderCabinet(module, document.getElementById('module-3d'));
+    }, 100); // Small delay to ensure modal is rendered
+  }
 }
 
 /**
