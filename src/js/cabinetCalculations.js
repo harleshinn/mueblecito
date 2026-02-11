@@ -143,8 +143,7 @@ export function generateCabinetParts(module) {
   
   // Doors
   if (module.hasDoors) {
-    const doorParts = generateDoors(module, boxHeight);
-    parts.push(...doorParts);
+    parts.push(...generateDoors(module));
   }
   
   return parts;
@@ -231,31 +230,9 @@ function generateStretchers(module) {
  * @param {number} boxHeight - Calculated box height
  * @returns {Array} - Array of door parts
  */
-function generateDoors(module, boxHeight) {
+function generateDoors(module) {
   const parts = [];
   const doors = module.doors || [];
-  
-  // Legacy support: if no doors array but has doorCount, calculate dimensions
-  // Full overlay doors formula:
-  // Door height = box height
-  // Door width = (cabinet width - (gap × (doorCount - 1))) / doorCount
-  if (doors.length === 0 && module.doorCount > 0) {
-    const doorCount = module.doorCount;
-    const gapsBetweenDoors = (doorCount - 1) * DEFAULTS.DOOR_GAP;
-    const doorWidth = (module.width - gapsBetweenDoors) / doorCount;
-    const doorHeight = boxHeight; // Full overlay, covers entire front
-    
-    parts.push(createPart({
-      moduleName: module.name,
-      partName: PART_TYPES.DOOR,
-      quantity: doorCount * module.quantity,
-      width: doorWidth,
-      height: doorHeight,
-      thickness: module.structuralThickness
-    }));
-    
-    return parts;
-  }
   
   if (doors.length === 0) {
     return parts;
@@ -264,7 +241,7 @@ function generateDoors(module, boxHeight) {
   // Group doors by unique dimension combinations to reduce part entries
   const dimensionGroups = new Map();
   
-  doors.forEach((door, index) => {
+  doors.forEach(door => {
     const width = door.width || 400;
     const height = door.height || 700;
     const key = `${width}_${height}`;

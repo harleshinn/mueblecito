@@ -36,8 +36,9 @@ export function generateModuleParts(module) {
  */
 export function generateProjectParts(project) {
   const allParts = [];
+  const modules = project.modules || [];
   
-  for (const module of project.modules) {
+  for (const module of modules) {
     // Skip modules not included in calculation
     if (module.includeInCalculation === false) {
       continue;

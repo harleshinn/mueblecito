@@ -1,23 +1,148 @@
 @use 'variables' as *;
 
+// Reduce add module button and accordion size on mobile
+@media (max-width: 600px) {
+  .btn--primary,
+  .btn {
+    font-size: 0.95rem;
+    padding: 8px 12px;
+    min-width: unset;
+    width: auto;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .btn-group {
+    flex-direction: column;
+    gap: 6px;
+  }
+  .accordion-header {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+    gap: 8px;
+  }
+  .accordion-badge {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+  }
+  .accordion-title {
+    font-size: 0.95rem;
+  }
+  .accordion-panel {
+    margin-bottom: 6px;
+  }
+  .parts-table,
+  .parts-table th,
+  .parts-table td {
+    font-size: 0.8rem;
+    padding: 6px 6px;
+  }
+  .parts-table th,
+  .parts-table td {
+    white-space: nowrap;
+  }
+  .parts-table__container {
+    overflow-x: auto;
+    width: 100vw;
+    margin-left: -16px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .panel-summary {
+    gap: 8px;
+  }
+}
+
 // Responsive Styles
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .app__main {
     padding: $spacing-md;
+    max-width: 100vw;
   }
-
+  .app__header, .app__footer {
+    padding: $spacing-md;
+    flex-direction: column;
+    text-align: center;
+    gap: $spacing-sm;
+  }
+  .section {
+    padding: $spacing-md;
+  }
   .section__header {
     flex-direction: column;
     align-items: stretch;
     gap: $spacing-md;
+    padding-bottom: $spacing-sm;
   }
-
-  .form__row,
-  .form-row {
+  .form, form {
+    padding: $spacing-md;
+  }
+  .form__row, .form-row {
     grid-template-columns: 1fr;
+    gap: $spacing-sm;
   }
-
+  .form__actions, .form-actions {
+    flex-direction: column;
+    gap: $spacing-sm;
+    align-items: stretch;
+  }
   .project-list {
     grid-template-columns: 1fr;
+    gap: $spacing-sm;
+  }
+  .project-card {
+    padding: $spacing-sm;
+  }
+  .results__header {
+    flex-direction: column;
+    gap: $spacing-sm;
+    align-items: stretch;
+  }
+  .panel-summary {
+    grid-template-columns: 1fr;
+    gap: $spacing-sm;
+  }
+  .module-card {
+    flex-direction: column;
+    gap: $spacing-sm;
+    padding: $spacing-sm;
+  }
+  .module-card__header {
+    width: 100%;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+  .module-card__actions {
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+  .pricing__options {
+    grid-template-columns: 1fr;
+  }
+  .modal__content {
+    max-width: 98vw;
+    padding: $spacing-sm;
+  }
+  .btn, .btn-group {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 500px) {
+  html {
+    font-size: 15px;
+  }
+  .app__header h1 {
+    font-size: 1.3rem;
+  }
+  .section__header h2 {
+    font-size: 1.1rem;
+  }
+  .project-card__header h3,
+  .results__header h3 {
+    font-size: 1rem;
+  }
+  .modal__content {
+    max-width: 100vw;
+    padding: $spacing-xs;
   }
 }

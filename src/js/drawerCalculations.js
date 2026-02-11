@@ -34,18 +34,7 @@ export function generateDrawerParts(module) {
     return [];
   }
   
-  // Support both new drawers array and legacy drawerConfig
   const drawers = module.drawers || [];
-  
-  // Legacy support: convert drawerConfig to drawers array
-  if (drawers.length === 0 && module.drawerConfig?.count > 0) {
-    const count = module.drawerConfig.count;
-    const height = module.drawerConfig.height || DEFAULTS.DRAWER_HEIGHT;
-    const depth = module.drawerConfig.depth || calculateInternalDepth(module);
-    for (let i = 0; i < count; i++) {
-      drawers.push({ height, depth });
-    }
-  }
   
   if (drawers.length === 0) {
     return [];
@@ -54,12 +43,12 @@ export function generateDrawerParts(module) {
   const parts = [];
   const moduleQuantity = module.quantity;
   const drawerInternalWidth = calculateDrawerInternalWidth(module);
-  const bottomThickness = module.drawerBottomThickness ?? module.drawerConfig?.bottomThickness ?? DEFAULTS.DRAWER_BOTTOM_THICKNESS;
+  const bottomThickness = module.drawerBottomThickness ?? DEFAULTS.DRAWER_BOTTOM_THICKNESS;
   
   // Group drawers by unique dimension combinations to reduce part entries
   const dimensionGroups = new Map();
   
-  drawers.forEach((drawer, index) => {
+  drawers.forEach(drawer => {
     const faceHeight = drawer.height || DEFAULTS.DRAWER_HEIGHT;
     const boxHeight = drawer.boxHeight || DEFAULTS.DRAWER_BOX_HEIGHT;
     const depth = drawer.depth || calculateInternalDepth(module);
@@ -155,14 +144,14 @@ export function getDrawerDimensionsSummary(module) {
   }
   
   const drawers = module.drawers || [];
-  if (drawers.length === 0 && !module.drawerConfig?.count) {
+  if (drawers.length === 0) {
     return null;
   }
   
   return {
-    count: drawers.length || module.drawerConfig?.count || 0,
+    count: drawers.length,
     internalWidth: calculateDrawerInternalWidth(module),
     drawers: drawers,
-    bottomThickness: module.drawerBottomThickness ?? module.drawerConfig?.bottomThickness ?? DEFAULTS.DRAWER_BOTTOM_THICKNESS
+    bottomThickness: module.drawerBottomThickness ?? DEFAULTS.DRAWER_BOTTOM_THICKNESS
   };
 }

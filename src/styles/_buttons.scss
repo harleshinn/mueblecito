@@ -1,4 +1,27 @@
 @use 'variables' as *;
+// How-to use link style
+.btn--howto {
+  border: 1.5px solid $primary-color;
+  color: $bg-color;
+  background: transparent;
+  font-weight: 500;
+  padding: 0.45em 1em;
+  border-radius: $border-radius;
+  margin-left: 1rem;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  box-shadow: none;
+  outline-offset: 2px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+.btn--howto:focus,
+.btn--howto:hover {
+  background: $primary-color;
+  color: #fff;
+  border-color: $primary-hover;
+  text-decoration: none;
+}
 
 // Button Block
 .btn {

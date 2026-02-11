@@ -116,6 +116,12 @@ function updatePageTranslations() {
     const key = el.getAttribute('data-i18n-title');
     el.title = t(key);
   });
+
+  // Update data-i18n-aria-label elements
+  document.querySelectorAll('[data-i18n-aria-label]').forEach(el => {
+    const key = el.getAttribute('data-i18n-aria-label');
+    el.setAttribute('aria-label', t(key));
+  });
   
   // Update specific static elements
   updateStaticTranslations();
@@ -125,34 +131,11 @@ function updatePageTranslations() {
  * Update static text elements that don't have data-i18n
  */
 function updateStaticTranslations() {
-  const elements = getElements();
-  
-  // Header & navigation
-  document.querySelector('.app__subtitle')?.setAttribute('data-i18n', 'appSubtitle');
-  
-  // Update button texts
-  if (elements.btnNewProject) elements.btnNewProject.textContent = t('newProject');
-  if (elements.btnBackProjects) elements.btnBackProjects.textContent = t('backToProjects');
-  if (elements.btnEditProject) elements.btnEditProject.textContent = t('editSettings');
-  if (elements.btnAddModule) elements.btnAddModule.textContent = t('addModule');
-  if (elements.btnGenerate) elements.btnGenerate.textContent = t('generateCutPlan');
-  if (elements.btnExportCSV) elements.btnExportCSV.textContent = t('exportToCSV');
-  
-  // Section headers
-  document.querySelector('.project-section h2')?.replaceWith(createTextNode('h2', t('projects')));
-  document.querySelector('.modules__header h3')?.replaceWith(createTextNode('h3', t('modules')));
-  document.querySelector('.results-header h3')?.replaceWith(createTextNode('h3', t('cutPlanResults')));
-  document.querySelector('.panel-diagrams-container h4')?.replaceWith(createTextNode('h4', t('cuttingDiagram')));
-  document.querySelector('.parts-table-header h4')?.replaceWith(createTextNode('h4', t('partsList')));
-}
-
-/**
- * Helper to create a text node with element type
- */
-function createTextNode(tag, text) {
-  const el = document.createElement(tag);
-  el.textContent = text;
-  return el;
+  // Select options need special handling - update options with data-i18n
+  document.querySelectorAll('select option[data-i18n]').forEach(option => {
+    const key = option.getAttribute('data-i18n');
+    option.textContent = t(key);
+  });
 }
 
 /**

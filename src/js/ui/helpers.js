@@ -124,6 +124,5 @@ export function translatePartName(partName) {
     }
   }
   
-  // Not a translation key, return as-is
   return partName;
 }

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cómo usar Mueblecito</title>
+  <link rel="stylesheet" href="styles/main.scss">
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 700px; margin: 2rem auto; padding: 1rem; }
+    h1, h2 { color: #2d3748; }
+    ul, ol { margin-left: 1.5rem; }
+    code { background: #f4f4f4; padding: 2px 6px; border-radius: 4px; }
+    .var-list { background: #f9fafb; border: 1px solid #e2e8f0; border-radius: 6px; padding: 1rem; margin-bottom: 2rem; }
+    a { color: #2563eb; }
+  </style>
+</head>
+<body>
+  <h1>Cómo usar Mueblecito</h1>
+  <p><strong>Mueblecito</strong> es una herramienta para diseñar muebles modulares y generar planos de corte precisos. Esta guía explica cada paso y campo en detalle.</p>
+
+  <h2>Guía paso a paso</h2>
+  <ol>
+    <li>
+      <b>Crea un proyecto:</b><br>
+      Haz clic en <b>+ Nuevo Proyecto</b> arriba. Escribe un nombre descriptivo (ejemplo: "Cocina 2026").
+    </li>
+    <li>
+      <b>Agrega módulos:</b><br>
+      Haz clic en <b>Agregar Módulo</b> para añadir un gabinete, cajonera u otro módulo. Cada módulo representa una pieza de tu mueble (ejemplo: gabinete bajo, alto, cajonera).
+    </li>
+    <li>
+      <b>Configura las variables del módulo:</b><br>
+      Para cada módulo, completa los siguientes campos:
+      <div class="var-list">
+        <ul>
+          <li><b>Ancho (<code>ancho</code>)</b>: <br>Ancho del módulo en milímetros. <br><i>Ejemplo:</i> 600 (para un gabinete de 60cm)</li>
+          <li><b>Alto (<code>alto</code>)</b>: <br>Alto del módulo en milímetros. <br><i>Ejemplo:</i> 720 (gabinete bajo estándar)</li>
+          <li><b>Profundidad (<code>profundidad</code>)</b>: <br>Profundidad del módulo en milímetros. <br><i>Ejemplo:</i> 560</li>
+          <li><b>Espesor (<code>espesor</code>)</b>: <br>Espesor del material en mm. <br><i>Ejemplo:</i> 18 (para MDF de 18mm)</li>
+          <li><b>Tipo (<code>tipo</code>)</b>: <br>Selecciona el tipo de módulo: <b>Gabinete bajo</b>, <b>Gabinete alto</b>, <b>Cajonera</b>, etc. Esto afecta las piezas generadas.</li>
+          <li><b>Fondo (<code>fondo</code>)</b>: <br>Indica si el módulo lleva fondo. <br><i>Ejemplo:</i> Sí (para gabinetes cerrados), No (para estantes abiertos)</li>
+          <li><b>Cajones (<code>cajones</code>)</b>: <br>Para cajoneras, indica cuántos cajones tendrá. <br><i>Ejemplo:</i> 3</li>
+          <li><b>Cubierta (<code>cubierta</code>)</b>: <br>Para gabinetes bajos, selecciona si lleva cubierta. <br><i>Ejemplo:</i> Sí (para muebles de cocina)</li>
+          <li><b>Nombre personalizado (<code>nombre</code>)</b>: <br>Opcional. Da un nombre único al módulo para identificarlo fácilmente.</li>
+        </ul>
+      </div>
+    </li>
+    <li>
+      <b>Configuración avanzada del proyecto:</b><br>
+      En <b>Editar configuración</b> (icono de engranaje o botón "Editar configuración"), puedes ajustar:
+      <ul>
+        <li><b>Espesor de cubierta por defecto:</b> Se usa para nuevos módulos si no se especifica otro.</li>
+        <li><b>Altura de patas por defecto:</b> Altura de las patas para gabinetes bajos.</li>
+        <li><b>Margen de descarte de panel:</b> Margen de desperdicio alrededor de cada panel (mm).</li>
+        <li><b>Ancho de corte (kerf):</b> Espesor de la hoja de sierra (mm) para cortes precisos.</li>
+        <li><b>Juego de corredera de cajón:</b> Espacio por lado para correderas (mm).</li>
+      </ul>
+    </li>
+    <li>
+      <b>Genera resultados:</b><br>
+      Haz clic en <b>Generar</b> para ver:
+      <ul>
+        <li><b>Resumen de paneles:</b> Lista de todos los paneles requeridos por espesor y tamaño.</li>
+        <li><b>Lista de piezas:</b> Tabla de todas las piezas, agrupadas por módulo.</li>
+        <li><b>Diagramas de corte:</b> Distribución visual para cada espesor de placa.</li>
+        <li><b>Precios:</b> Costo estimado según tus precios (si los ingresaste).</li>
+      </ul>
+    </li>
+    <li>
+      <b>Exporta y guarda:</b><br>
+      Descarga los resultados como CSV para hojas de cálculo, o usa los diagramas para el corte. Los proyectos se guardan en tu navegador para futuras ediciones.
+    </li>
+  </ol>
+
+  <h2>Tabla de referencia de campos</h2>
+  <table style="width:100%;border-collapse:collapse;margin-bottom:2rem;">
+    <thead>
+      <tr style="background:#f4f4f4;"><th style="text-align:left;padding:6px;">Campo</th><th style="text-align:left;padding:6px;">Descripción</th><th style="text-align:left;padding:6px;">Ejemplo</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><b>ancho</b></td><td>Ancho (mm)</td><td>600</td></tr>
+      <tr><td><b>alto</b></td><td>Alto (mm)</td><td>720</td></tr>
+      <tr><td><b>profundidad</b></td><td>Profundidad (mm)</td><td>560</td></tr>
+      <tr><td><b>espesor</b></td><td>Espesor del material (mm)</td><td>18</td></tr>
+      <tr><td><b>tipo</b></td><td>Tipo de módulo</td><td>Gabinete bajo</td></tr>
+      <tr><td><b>fondo</b></td><td>Fondo (sí/no)</td><td>Sí</td></tr>
+      <tr><td><b>cajones</b></td><td>Cantidad de cajones</td><td>3</td></tr>
+      <tr><td><b>cubierta</b></td><td>Cubierta (sí/no)</td><td>Sí</td></tr>
+      <tr><td><b>nombre</b></td><td>Nombre personalizado</td><td>"Despensa Izquierda"</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Consejos y buenas prácticas</h2>
+  <ul>
+    <li>Usa nombres claros para proyectos y módulos para mantener el orden.</li>
+    <li>Verifica todas las medidas antes de generar resultados.</li>
+    <li>Utiliza la pestaña <b>Proyectos</b> para alternar entre diferentes trabajos.</li>
+    <li>Revisa la pestaña <b>Resultados</b> para ver el resumen de piezas y costos.</li>
+    <li>Exporta tus resultados para compartir o imprimir.</li>
+  </ul>
+  <p><a href="index.html" style="font-size:1.1em;">← Volver al inicio</a></p>
+</body>
+</html>

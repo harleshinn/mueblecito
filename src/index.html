@@ -3,20 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mueblecito - MDF Cut Plan Generator</title>
+  <title data-i18n="appPageTitle">Mueblecito - MDF Cut Plan Generator</title>
 </head>
 <body>
   <div id="app" class="app">
     <header class="app__header">
       <div class="app__header-content">
-        <h1>Mueblecito</h1>
+        <h1 data-i18n="appTitle">Mueblecito</h1>
         <p class="app__subtitle" data-i18n="appSubtitle">MDF Modular Cabinet Cut Plan Generator</p>
       </div>
       <div class="app__header-actions">
-        <select id="language-switcher" class="language-switcher" aria-label="Select language">
-          <option value="es">🇪🇸 Español</option>
-          <option value="en">🇺🇸 English</option>
+        <select id="language-switcher" class="language-switcher" data-i18n-aria-label="selectLanguage" aria-label="Select language">
+          <option value="es" data-i18n="languageOptionEs">🇪🇸 Español</option>
+          <option value="en" data-i18n="languageOptionEn">🇺🇸 English</option>
         </select>
+        <a href="how-to-use.html" class="btn btn--howto" id="howto-link-en" aria-label="How to use Mueblecito (opens help page)">
+          How to use
+        </a>
+        <a href="como-usar.html" class="btn btn--howto" id="howto-link-es" aria-label="Cómo usar Mueblecito (abre la ayuda)" style="display:none;">
+          Cómo usar
+        </a>
+        <script>
+        // Show the correct help link based on language
+        (function() {
+          var langSel = document.getElementById('language-switcher');
+          var linkEn = document.getElementById('howto-link-en');
+          var linkEs = document.getElementById('howto-link-es');
+          function updateHelpLink() {
+            if (langSel.value === 'es') {
+              linkEn.style.display = 'none';
+              linkEs.style.display = '';
+            } else {
+              linkEn.style.display = '';
+              linkEs.style.display = 'none';
+            }
+          }
+          langSel.addEventListener('change', updateHelpLink);
+          updateHelpLink();
+        })();
+        </script>
       </div>
     </header>
 
@@ -24,8 +49,8 @@
       <!-- Project Selection -->
       <section class="section project-section">
         <div class="section__header">
-          <h2>Projects</h2>
-          <button id="btn-new-project" class="btn btn--primary">+ New Project</button>
+          <h2 data-i18n="projects">Projects</h2>
+          <button id="btn-new-project" class="btn btn--primary" data-i18n="newProject">+ New Project</button>
         </div>
         <div class="project-list" id="project-list">
           <!-- Projects will be rendered here -->
@@ -35,10 +60,10 @@
       <!-- Project Editor (hidden by default) -->
       <section class="section project-editor hidden" id="project-editor">
         <div class="section__header">
-          <h2 id="project-title">Project Name</h2>
+          <h2 id="project-title"></h2>
           <div class="btn-group">
-            <button id="btn-edit-project" class="btn btn--secondary">Edit Settings</button>
-            <button id="btn-back-projects" class="btn btn--text">← Back to Projects</button>
+            <button id="btn-edit-project" class="btn btn--secondary" data-i18n="editSettings">Edit Settings</button>
+            <button id="btn-back-projects" class="btn btn--text" data-i18n="backToProjects">← Back to Projects</button>
           </div>
         </div>
 
@@ -46,61 +71,61 @@
         <div class="modal hidden" id="project-settings-modal">
           <div class="modal__content">
             <div class="modal__header">
-              <h3>Project Settings</h3>
-              <button class="btn btn--close" id="btn-close-project-settings">&times;</button>
+              <h3 data-i18n="projectSettings">Project Settings</h3>
+              <button class="btn btn--close" id="btn-close-project-settings" data-i18n-title="closeModal" data-i18n-aria-label="closeModal">&times;</button>
             </div>
             <form id="project-settings-form">
               <div class="form-group">
-                <label for="project-name">Project Name</label>
+                <label for="project-name" data-i18n="projectName">Project Name</label>
                 <input type="text" id="project-name" required>
               </div>
               <div class="form-row">
                 <div class="form-group">
-                  <label for="default-countertop-thickness">Default Countertop Thickness (mm)</label>
+                  <label for="default-countertop-thickness" data-i18n="defaultCountertopThickness">Default Countertop Thickness (mm)</label>
                   <input type="number" id="default-countertop-thickness" value="0" min="0" step="1">
                 </div>
                 <div class="form-group">
-                  <label for="default-leg-height">Default Leg Height (mm)</label>
+                  <label for="default-leg-height" data-i18n="defaultLegHeight">Default Leg Height (mm)</label>
                   <input type="number" id="default-leg-height" value="100" min="0" step="1">
                 </div>
               </div>
               <div class="form-row">
                 <div class="form-group">
-                  <label for="panel-discard-margin">Panel Discard Margin (mm)</label>
+                  <label for="panel-discard-margin" data-i18n="panelDiscardMargin">Panel Discard Margin (mm)</label>
                   <input type="number" id="panel-discard-margin" value="15" min="0" step="1">
                 </div>
                 <div class="form-group">
-                  <label for="kerf-width">Kerf Width (mm)</label>
+                  <label for="kerf-width" data-i18n="kerfWidth">Kerf Width (mm)</label>
                   <input type="number" id="kerf-width" value="3" min="0" step="0.5">
                 </div>
               </div>
               <div class="form-row">
                 <div class="form-group">
-                  <label for="drawer-slide-clearance">Drawer Slide Clearance per side (mm)</label>
+                  <label for="drawer-slide-clearance" data-i18n="drawerSlideClearance">Drawer Slide Clearance per side (mm)</label>
                   <input type="number" id="drawer-slide-clearance" value="25" min="0" step="1">
                 </div>
               </div>
               
               <fieldset class="form-fieldset">
-                <legend>Panel Prices (per full panel)</legend>
+                <legend data-i18n="panelPrices">Panel Prices (per full panel)</legend>
                 <div class="form-row">
                   <div class="form-group">
-                    <label for="panel-price-18">18 mm Panel</label>
+                    <label for="panel-price-18" data-i18n="thickness18mm">18 mm</label>
                     <input type="number" id="panel-price-18" value="0" min="0" step="0.01">
                   </div>
                   <div class="form-group">
-                    <label for="panel-price-5.5">5.5 mm Panel</label>
+                    <label for="panel-price-5.5" data-i18n="thickness55mm">5.5 mm</label>
                     <input type="number" id="panel-price-5.5" value="0" min="0" step="0.01">
                   </div>
                   <div class="form-group">
-                    <label for="panel-price-3">3 mm Panel</label>
+                    <label for="panel-price-3" data-i18n="thickness3mm">3 mm</label>
                     <input type="number" id="panel-price-3" value="0" min="0" step="0.01">
                   </div>
                 </div>
               </fieldset>
               
               <div class="form-actions">
-                <button type="submit" class="btn btn--primary">Save Settings</button>
+                <button type="submit" class="btn btn--primary" data-i18n="saveSettings">Save Settings</button>
               </div>
             </form>
           </div>
@@ -109,8 +134,8 @@
         <!-- Modules List -->
         <div class="modules">
           <div class="modules__header">
-            <h3>Modules</h3>
-            <button id="btn-add-module" class="btn btn--primary">+ Add Module</button>
+            <h3 data-i18n="modules">Modules</h3>
+            <button id="btn-add-module" class="btn btn--primary" data-i18n="addModule">+ Add Module</button>
           </div>
           <div class="modules__list" id="modules-list">
             <!-- Module items will be rendered here -->
@@ -121,53 +146,53 @@
         <div class="modal hidden" id="module-modal">
           <div class="modal__content modal__content--large">
             <div class="modal__header">
-              <h3 id="module-modal-title">Add Module</h3>
-              <button class="btn btn--close" id="btn-close-module">&times;</button>
+              <h3 id="module-modal-title" data-i18n="addModule">Add Module</h3>
+              <button class="btn btn--close" id="btn-close-module" data-i18n-title="closeModal" data-i18n-aria-label="closeModal">&times;</button>
             </div>
             <form id="module-form">
               <input type="hidden" id="module-id">
               
               <div class="form-row">
                 <div class="form-group">
-                  <label for="module-name">Name</label>
+                  <label for="module-name" data-i18n="name">Name</label>
                   <input type="text" id="module-name" required>
                 </div>
                 <div class="form-group">
-                  <label for="module-type">Type</label>
+                  <label for="module-type" data-i18n="type">Type</label>
                   <select id="module-type" required>
-                    <option value="lower">Lower Cabinet</option>
-                    <option value="upper">Upper Cabinet</option>
+                    <option value="lower" data-i18n="lowerCabinet">Lower Cabinet</option>
+                    <option value="upper" data-i18n="upperCabinet">Upper Cabinet</option>
                   </select>
                 </div>
                 <div class="form-group">
-                  <label for="module-quantity">Quantity</label>
+                  <label for="module-quantity" data-i18n="quantity">Quantity</label>
                   <input type="number" id="module-quantity" value="1" min="1" step="1" required>
                 </div>
               </div>
 
               <fieldset class="form-fieldset">
-                <legend>Dimensions (mm)</legend>
+                <legend data-i18n="dimensions">Dimensions (mm)</legend>
                 <div class="form-row">
                   <div class="form-group">
-                    <label for="module-width">Width</label>
+                    <label for="module-width" data-i18n="width">Width</label>
                     <input type="number" id="module-width" required min="1" step="1">
                   </div>
                   <div class="form-group">
-                    <label for="module-depth">Depth</label>
+                    <label for="module-depth" data-i18n="depth">Depth</label>
                     <input type="number" id="module-depth" required min="1" step="1">
                   </div>
                   <div class="form-group">
-                    <label for="module-height">Total Height</label>
+                    <label for="module-height" data-i18n="totalHeight">Total Height</label>
                     <input type="number" id="module-height" required min="1" step="1">
                   </div>
                 </div>
               </fieldset>
 
               <fieldset class="form-fieldset lower-cabinet-options">
-                <legend>Lower Cabinet Options</legend>
+                <legend data-i18n="lowerCabinetOptions">Lower Cabinet Options</legend>
                 <div class="form-row">
                   <div class="form-group">
-                    <label for="module-leg-height">Leg Height (mm)</label>
+                    <label for="module-leg-height" data-i18n="legHeight">Leg Height (mm)</label>
                     <input type="number" id="module-leg-height" value="100" min="0" step="1">
                   </div>
                 </div>
@@ -175,14 +200,14 @@
                   <div class="form-group">
                     <label>
                       <input type="checkbox" id="module-has-countertop" checked>
-                      Has Countertop
+                      <span data-i18n="hasCountertop">Has Countertop</span>
                     </label>
                   </div>
                 </div>
                 <div class="countertop-options" id="countertop-options">
                   <div class="form-row">
                     <div class="form-group">
-                      <label for="module-countertop-thickness">Countertop Thickness (mm)</label>
+                      <label for="module-countertop-thickness" data-i18n="countertopThickness">Countertop Thickness (mm)</label>
                       <input type="number" id="module-countertop-thickness" value="0" min="0" step="1">
                     </div>
                   </div>
@@ -190,44 +215,44 @@
               </fieldset>
 
               <fieldset class="form-fieldset">
-                <legend>Panel Thicknesses (mm)</legend>
+                <legend data-i18n="panelThicknesses">Panel Thicknesses (mm)</legend>
                 <div class="form-row">
                   <div class="form-group">
-                    <label for="module-structural-thickness">Structural Panels</label>
+                    <label for="module-structural-thickness" data-i18n="structuralPanels">Structural Panels</label>
                     <select id="module-structural-thickness">
-                      <option value="18" selected>18 mm</option>
-                      <option value="5.5">5.5 mm</option>
-                      <option value="3">3 mm</option>
+                      <option value="18" selected data-i18n="thickness18mm">18 mm</option>
+                      <option value="5.5" data-i18n="thickness55mm">5.5 mm</option>
+                      <option value="3" data-i18n="thickness3mm">3 mm</option>
                     </select>
                   </div>
                   <div class="form-group">
-                    <label for="module-back-thickness">Back Panel</label>
+                    <label for="module-back-thickness" data-i18n="backPanel">Back Panel</label>
                     <select id="module-back-thickness">
-                      <option value="3" selected>3 mm</option>
-                      <option value="5.5">5.5 mm</option>
-                      <option value="18">18 mm</option>
+                      <option value="3" selected data-i18n="thickness3mm">3 mm</option>
+                      <option value="5.5" data-i18n="thickness55mm">5.5 mm</option>
+                      <option value="18" data-i18n="thickness18mm">18 mm</option>
                     </select>
                   </div>
                 </div>
               </fieldset>
 
               <fieldset class="form-fieldset">
-                <legend>Back Panel</legend>
+                <legend data-i18n="backPanel">Back Panel</legend>
                 <div class="form-row">
                   <div class="form-group">
                     <label>
                       <input type="checkbox" id="module-has-back-panel" checked>
-                      Has Back Panel
+                      <span data-i18n="hasBackPanel">Has Back Panel</span>
                     </label>
                   </div>
                 </div>
                 <div id="back-panel-options">
                   <div class="form-row">
                     <div class="form-group">
-                      <label for="module-back-type">Back Panel Placement</label>
+                      <label for="module-back-type" data-i18n="backPanelPlacement">Back Panel Placement</label>
                       <select id="module-back-type">
-                        <option value="inset" selected>Inset (inside the box)</option>
-                        <option value="external">External (mounted on back)</option>
+                        <option value="inset" selected data-i18n="inset">Inset (inside the box)</option>
+                        <option value="external" data-i18n="external">External (mounted on back)</option>
                       </select>
                     </div>
                   </div>
@@ -235,37 +260,37 @@
               </fieldset>
 
               <fieldset class="form-fieldset">
-                <legend>Box Configuration</legend>
+                <legend data-i18n="boxConfiguration">Box Configuration</legend>
                 <div class="form-row">
                   <div class="form-group">
                     <label>
                       <input type="checkbox" id="module-has-top" checked>
-                      Has Top Panel
+                      <span data-i18n="hasTopPanel">Has Top Panel</span>
                     </label>
                   </div>
                 </div>
               </fieldset>
 
               <fieldset class="form-fieldset">
-                <legend>Stretchers</legend>
+                <legend data-i18n="stretchers">Stretchers</legend>
                 <div class="form-row">
                   <div class="form-group">
                     <label>
                       <input type="checkbox" id="module-has-top-stretcher">
-                      Top Stretcher
+                      <span data-i18n="topStretcher">Top Stretcher</span>
                     </label>
                   </div>
                   <div class="form-group">
                     <label>
                       <input type="checkbox" id="module-has-bottom-stretcher">
-                      Bottom Stretcher
+                      <span data-i18n="bottomStretcher">Bottom Stretcher</span>
                     </label>
                   </div>
                 </div>
                 <div class="stretcher-options hidden" id="stretcher-options">
                   <div class="form-row">
                     <div class="form-group">
-                      <label for="module-stretcher-height">Height (mm)</label>
+                      <label for="module-stretcher-height" data-i18n="height">Height (mm)</label>
                       <input type="number" id="module-stretcher-height" value="80" min="20" step="1">
                     </div>
                   </div>
@@ -273,65 +298,65 @@
               </fieldset>
 
               <fieldset class="form-fieldset">
-                <legend>Doors</legend>
+                <legend data-i18n="doors">Doors</legend>
                 <div class="form-row">
                   <div class="form-group">
                     <label>
                       <input type="checkbox" id="module-has-doors">
-                      Has Doors
+                      <span data-i18n="hasDoors">Has Doors</span>
                     </label>
                   </div>
                 </div>
                 <div class="door-options hidden" id="door-options">
                   <div class="form-row">
                     <div class="form-group">
-                      <label for="module-door-gap">Door Gap (mm)</label>
+                      <label for="module-door-gap" data-i18n="doorGap">Door Gap (mm)</label>
                       <input type="number" id="module-door-gap" value="2" min="0" step="0.5">
                     </div>
                   </div>
                   <div class="door-list-header">
-                    <span>#</span>
-                    <span>Width (mm)</span>
-                    <span>Height (mm)</span>
+                    <span data-i18n="indexLabel">No.</span>
+                    <span data-i18n="width">Width (mm)</span>
+                    <span data-i18n="height">Height (mm)</span>
                     <span></span>
                   </div>
                   <div class="door-list" id="door-list"></div>
-                  <button type="button" class="btn btn--secondary" id="btn-add-door">+ Add Door</button>
+                  <button type="button" class="btn btn--secondary" id="btn-add-door" data-i18n="addDoor">+ Add Door</button>
                 </div>
               </fieldset>
 
               <fieldset class="form-fieldset">
-                <legend>Cajones</legend>
+                <legend data-i18n="drawers">Drawers</legend>
                 <div class="form-row">
                   <div class="form-group">
                     <label>
                       <input type="checkbox" id="module-has-drawers">
-                      Tiene cajones
+                      <span data-i18n="hasDrawers">Has Drawers</span>
                     </label>
                   </div>
                 </div>
                 <div class="drawer-options hidden" id="drawer-options">
                   <div class="form-row">
                     <div class="form-group">
-                      <label for="module-drawer-slide-clearance">Correderas (mm)</label>
+                      <label for="module-drawer-slide-clearance" data-i18n="slideClearance">Slide Clearance (mm)</label>
                       <input type="number" id="module-drawer-slide-clearance" value="25" min="0" step="1">
                     </div>
                     <div class="form-group">
-                      <label for="module-drawer-bottom-thickness">Fondo del cajón</label>
+                      <label for="module-drawer-bottom-thickness" data-i18n="drawerBottom">Drawer Bottom</label>
                       <select id="module-drawer-bottom-thickness">
-                        <option value="3" selected>3 mm</option>
-                        <option value="5.5">5.5 mm</option>
+                        <option value="3" selected data-i18n="thickness3mm">3 mm</option>
+                        <option value="5.5" data-i18n="thickness55mm">5.5 mm</option>
                       </select>
                     </div>
                     <div class="form-group">
-                      <label for="module-drawer-spacing">Separación vertical (mm)</label>
+                      <label for="module-drawer-spacing" data-i18n="verticalSpacing">Vertical Spacing (mm)</label>
                       <input type="number" id="module-drawer-spacing" value="3" min="0" step="1">
                     </div>
                   </div>
                   <div class="drawer-list-header">
-                    <span>Cajones</span>
+                    <span data-i18n="drawers">Drawers</span>
                     <span class="drawer-remaining-height" id="drawer-remaining-height"></span>
-                    <button type="button" class="btn btn--secondary btn--small" id="btn-add-drawer">+ Agregar cajón</button>
+                    <button type="button" class="btn btn--secondary btn--small" id="btn-add-drawer" data-i18n="addDrawer">+ Add Drawer</button>
                   </div>
                   <div class="drawer-list" id="drawer-list">
                     <!-- Drawer items will be added here dynamically -->
@@ -340,8 +365,8 @@
               </fieldset>
 
               <div class="form-actions">
-                <button type="button" class="btn btn--text" id="btn-cancel-module">Cancelar</button>
-                <button type="submit" class="btn btn--primary">Guardar Modulo</button>
+                <button type="button" class="btn btn--text" id="btn-cancel-module" data-i18n="cancel">Cancel</button>
+                <button type="submit" class="btn btn--primary" data-i18n="saveModule">Save Module</button>
               </div>
             </form>
           </div>
@@ -350,8 +375,8 @@
         <!-- Results Section -->
         <div class="results-container">
           <div class="results-header">
-            <h3>Resultados del plan de corte</h3>
-            <button id="btn-generate" class="btn btn--success">Generar plan de corte</button>
+            <h3 data-i18n="cutPlanResults">Cut Plan Results</h3>
+            <button id="btn-generate" class="btn btn--success" data-i18n="generateCutPlan">Generate Cut Plan</button>
           </div>
           
           <div class="results-content hidden" id="results-content">
@@ -362,7 +387,7 @@
 
             <!-- Panel Diagrams -->
             <div class="panel-diagrams-container">
-              <h4>Diagrama de corte</h4>
+              <h4 data-i18n="cuttingDiagram">Cutting Diagram</h4>
               <div class="panel-diagrams" id="panel-diagrams">
                 <!-- Panel diagrams will be rendered here -->
               </div>
@@ -371,8 +396,8 @@
             <!-- Parts Table -->
             <div class="parts-table-container">
               <div class="parts-table-header">
-                <h4>Despiece</h4>
-                <button class="btn btn--secondary" id="btn-export-csv">Exportar a CSV</button>
+                <h4 data-i18n="partsList">Parts List</h4>
+                <button class="btn btn--secondary" id="btn-export-csv" data-i18n="exportToCSV">Export to CSV</button>
               </div>
               <div class="parts-accordion" id="parts-accordion">
                 <!-- Accordion panels will be rendered here -->
@@ -384,7 +409,7 @@
     </main>
 
     <footer class="app__footer">
-      <p>&copy; 2026 Mueblecito - Workshop-Realistic MDF Cut Plans</p>
+      <p data-i18n="copyright">&copy; 2026 Mueblecito - Workshop-Realistic MDF Cut Plans</p>
     </footer>
   </div>
 </body>

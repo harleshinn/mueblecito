@@ -10,6 +10,7 @@ export const translations = {
   en: {
     // App header
     appTitle: 'Mueblecito',
+    appPageTitle: 'Mueblecito - MDF Cut Plan Generator',
     appSubtitle: 'MDF Modular Cabinet Cut Plan Generator',
     
     // Projects section
@@ -23,6 +24,7 @@ export const translations = {
     
     // Project settings
     projectSettings: 'Project Settings',
+    closeModal: 'Close',
     projectName: 'Project Name',
     defaultCountertopThickness: 'Default Countertop Thickness (mm)',
     defaultLegHeight: 'Default Leg Height (mm)',
@@ -30,6 +32,9 @@ export const translations = {
     kerfWidth: 'Kerf Width (mm)',
     drawerSlideClearance: 'Drawer Slide Clearance per side (mm)',
     panelPrices: 'Panel Prices (per full panel)',
+    thickness18mm: '18 mm',
+    thickness55mm: '5.5 mm',
+    thickness3mm: '3 mm',
     panelMm: 'mm Panel',
     saveSettings: 'Save Settings',
     editSettings: 'Edit Settings',
@@ -82,6 +87,7 @@ export const translations = {
     
     // Doors
     doors: 'Doors',
+    indexLabel: 'No.',
     hasDoors: 'Has Doors',
     doorGap: 'Door Gap (mm)',
     addDoor: '+ Add Door',
@@ -169,11 +175,15 @@ export const translations = {
     language: 'Language',
     english: 'English',
     spanish: 'Spanish',
+    selectLanguage: 'Select language',
+    languageOptionEn: '🇺🇸 English',
+    languageOptionEs: '🇪🇸 Español',
   },
   
   es: {
     // App header
     appTitle: 'Mueblecito',
+    appPageTitle: 'Mueblecito - Generador de Plan de Corte MDF',
     appSubtitle: 'Generador de Plan de Corte para MDF Modular',
     
     // Projects section
@@ -187,6 +197,7 @@ export const translations = {
     
     // Project settings
     projectSettings: 'Configuración del Proyecto',
+    closeModal: 'Cerrar',
     projectName: 'Nombre del Proyecto',
     defaultCountertopThickness: 'Grosor de Mesada por defecto (mm)',
     defaultLegHeight: 'Altura de Patas por defecto (mm)',
@@ -194,6 +205,9 @@ export const translations = {
     kerfWidth: 'Ancho de Corte (mm)',
     drawerSlideClearance: 'Holgura de Corredera por lado (mm)',
     panelPrices: 'Precios de Paneles (por panel completo)',
+    thickness18mm: '18 mm',
+    thickness55mm: '5.5 mm',
+    thickness3mm: '3 mm',
     panelMm: 'mm Panel',
     saveSettings: 'Guardar Configuración',
     editSettings: 'Editar Configuración',
@@ -246,6 +260,7 @@ export const translations = {
     
     // Doors
     doors: 'Puertas',
+    indexLabel: 'N°',
     hasDoors: 'Tiene Puertas',
     doorGap: 'Separación de Puertas (mm)',
     addDoor: '+ Agregar Puerta',
@@ -293,8 +308,8 @@ export const translations = {
     pieces: 'piezas',
     
     // Parts table
-    partName: 'Nombre de Pieza',
-    partQty: 'Cantidad',
+    partName: 'Pieza',
+    partQty: 'Cant.',
     partWidth: 'Ancho (mm)',
     partLength: 'Largo (mm)',
     partThickness: 'Espesor (mm)',
@@ -333,6 +348,9 @@ export const translations = {
     language: 'Idioma',
     english: 'Inglés',
     spanish: 'Español',
+    selectLanguage: 'Seleccionar idioma',
+    languageOptionEn: '🇺🇸 Inglés',
+    languageOptionEs: '🇪🇸 Español',
   }
 };
 

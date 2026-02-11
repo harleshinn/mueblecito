@@ -44,7 +44,18 @@ module.exports = (env, argv) => {
     plugins: [
       new HtmlWebpackPlugin({
         template: './src/index.html',
+        filename: 'index.html',
         title: 'Mueblecito - MDF Cut Plan Generator'
+      }),
+      new HtmlWebpackPlugin({
+        template: './src/how-to-use.html',
+        filename: 'how-to-use.html',
+        inject: false
+      }),
+      new HtmlWebpackPlugin({
+        template: './src/como-usar.html',
+        filename: 'como-usar.html',
+        inject: false
       }),
       ...(isProduction ? [new MiniCssExtractPlugin({
         filename: 'styles.[contenthash].css'

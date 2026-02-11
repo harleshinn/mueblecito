@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Use Mueblecito</title>
+  <link rel="stylesheet" href="styles/main.scss">
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 700px; margin: 2rem auto; padding: 1rem; }
+    h1, h2 { color: #2d3748; }
+    ul, ol { margin-left: 1.5rem; }
+    code { background: #f4f4f4; padding: 2px 6px; border-radius: 4px; }
+    .var-list { background: #f9fafb; border: 1px solid #e2e8f0; border-radius: 6px; padding: 1rem; margin-bottom: 2rem; }
+    a { color: #2563eb; }
+  </style>
+</head>
+<body>
+  <h1>How to Use Mueblecito</h1>
+  <p><strong>Mueblecito</strong> is a tool for designing modular furniture and generating precise cut plans. This guide explains every step and input in detail.</p>
+
+  <h2>Step-by-Step Guide</h2>
+  <ol>
+    <li>
+      <b>Create a Project:</b><br>
+      Click <b>+ New Project</b> at the top. Enter a descriptive name (e.g., "Kitchen Cabinets 2026").
+    </li>
+    <li>
+      <b>Add Modules:</b><br>
+      Click <b>Add Module</b> to add a cabinet, drawer, or custom module. Each module represents a piece of your furniture (e.g., a lower cabinet, an upper cabinet, a drawer unit).
+    </li>
+    <li>
+      <b>Configure Module Variables:</b><br>
+      For each module, fill in the following fields:
+      <div class="var-list">
+        <ul>
+          <li><b>Width (<code>ancho</code>)</b>: <br>Module width in millimeters. <br><i>Example:</i> 600 (for a 60cm wide cabinet)</li>
+          <li><b>Height (<code>alto</code>)</b>: <br>Module height in millimeters. <br><i>Example:</i> 720 (for a standard kitchen base cabinet)</li>
+          <li><b>Depth (<code>profundidad</code>)</b>: <br>Module depth in millimeters. <br><i>Example:</i> 560 (for a deep cabinet)</li>
+          <li><b>Material Thickness (<code>espesor</code>)</b>: <br>Board thickness in mm. <br><i>Example:</i> 18 (for 18mm MDF)</li>
+          <li><b>Type (<code>tipo</code>)</b>: <br>Select the module type: <b>Lower Cabinet</b>, <b>Upper Cabinet</b>, <b>Drawer</b>, etc. This affects the parts generated.</li>
+          <li><b>Back Panel (<code>fondo</code>)</b>: <br>Choose if the module has a back panel. <br><i>Example:</i> Yes (for closed cabinets), No (for open shelves)</li>
+          <li><b>Number of Drawers (<code>cajones</code>)</b>: <br>For drawer modules, set how many drawers you want. <br><i>Example:</i> 3</li>
+          <li><b>Countertop (<code>cubierta</code>)</b>: <br>For lower cabinets, select if a countertop is included. <br><i>Example:</i> Yes (for kitchen base units)</li>
+          <li><b>Custom Name (<code>nombre</code>)</b>: <br>Optional. Give the module a unique name for easy identification.</li>
+        </ul>
+      </div>
+    </li>
+    <li>
+      <b>Advanced Project Settings:</b><br>
+      In <b>Edit Settings</b> (gear icon or "Edit Settings" button), you can adjust:
+      <ul>
+        <li><b>Default Countertop Thickness:</b> Used for all new modules unless overridden.</li>
+        <li><b>Default Leg Height:</b> Height of legs for lower cabinets.</li>
+        <li><b>Panel Discard Margin:</b> Waste margin around each panel (mm).</li>
+        <li><b>Kerf Width:</b> Saw blade thickness (mm) for accurate cuts.</li>
+        <li><b>Drawer Slide Clearance:</b> Space per side for drawer slides (mm).</li>
+      </ul>
+    </li>
+    <li>
+      <b>Generate Results:</b><br>
+      Click <b>Generate</b> to see:
+      <ul>
+        <li><b>Panel Summary:</b> List of all required panels by thickness and size.</li>
+        <li><b>Parts List:</b> Table of all parts, grouped by module.</li>
+        <li><b>Cutting Diagrams:</b> Visual layout for each board thickness.</li>
+        <li><b>Pricing:</b> Estimated cost based on your input prices (if available).</li>
+      </ul>
+    </li>
+    <li>
+      <b>Export & Save:</b><br>
+      Download the results as CSV for spreadsheets, or use the diagrams for cutting guidance. Projects are saved in your browser for future editing.
+    </li>
+  </ol>
+
+  <h2>Input Reference Table</h2>
+  <table style="width:100%;border-collapse:collapse;margin-bottom:2rem;">
+    <thead>
+      <tr style="background:#f4f4f4;"><th style="text-align:left;padding:6px;">Field</th><th style="text-align:left;padding:6px;">Description</th><th style="text-align:left;padding:6px;">Example</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><b>ancho</b></td><td>Width (mm)</td><td>600</td></tr>
+      <tr><td><b>alto</b></td><td>Height (mm)</td><td>720</td></tr>
+      <tr><td><b>profundidad</b></td><td>Depth (mm)</td><td>560</td></tr>
+      <tr><td><b>espesor</b></td><td>Material thickness (mm)</td><td>18</td></tr>
+      <tr><td><b>tipo</b></td><td>Module type</td><td>Lower Cabinet</td></tr>
+      <tr><td><b>fondo</b></td><td>Back panel (yes/no)</td><td>Yes</td></tr>
+      <tr><td><b>cajones</b></td><td>Number of drawers</td><td>3</td></tr>
+      <tr><td><b>cubierta</b></td><td>Countertop (yes/no)</td><td>Yes</td></tr>
+      <tr><td><b>nombre</b></td><td>Custom name</td><td>"Pantry Left"</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Tips & Best Practices</h2>
+  <ul>
+    <li>Use clear names for projects and modules to stay organized.</li>
+    <li>Double-check all measurements before generating results.</li>
+    <li>Use the <b>Projects</b> tab to switch between different furniture jobs.</li>
+    <li>Review the <b>Results</b> tab for a summary of all parts and costs.</li>
+    <li>Export your results for sharing or printing.</li>
+  </ul>
+  <p><a href="index.html" style="font-size:1.1em;">← Back to Home</a></p>
+</body>
+</html>
