@@ -3,11 +3,332 @@
  * Handles the module modal form, drawers, and doors
  */
 
-import { CABINET_TYPES, DEFAULTS } from '../constants.js';
+import { CABINET_TYPES, DEFAULTS, DOOR_TYPES } from '../constants.js';
 import { getElements } from './elements.js';
 import { t } from '../i18n.js';
 import { setInnerHTML } from './helpers.js';
 import { renderCabinet } from '../cabinetRenderer.js';
+import { 
+  SHERWIN_WILLIAMS_COLORS, 
+  COLOR_CATEGORIES, 
+  DEFAULT_COMPONENT_COLORS,
+  loadComponentColors,
+  saveComponentColors 
+} from '../colorPalette.js';
+
+// Store current module for 3D preview re-rendering
+let currentPreviewModule = null;
+let currentColors = loadComponentColors();
+
+/**
+ * Get current color configuration
+ */
+function getColorConfig() {
+  return currentColors;
+}
+
+/**
+ * Re-render the 3D preview with current settings
+ */
+function rerenderPreview() {
+  if (currentPreviewModule) {
+    const container = document.getElementById('module-3d');
+    const toggle = document.getElementById('toggle-3d-fill');
+    const filled = toggle ? toggle.checked : false;
+    renderCabinet(currentPreviewModule, container, { filled, colors: currentColors });
+  }
+}
+
+/**
+ * Build a flat array of all color entries for search
+ * Each entry: { name, hex, category }
+ */
+function buildColorSearchData() {
+  const entries = [];
+  Object.entries(COLOR_CATEGORIES).forEach(([category, colorNames]) => {
+    colorNames.forEach(colorName => {
+      const hex = SHERWIN_WILLIAMS_COLORS[colorName];
+      if (hex) {
+        entries.push({ name: colorName, hex, category });
+      }
+    });
+  });
+  // Deduplicate by name (a color may appear in multiple categories)
+  const seen = new Set();
+  return entries.filter(e => {
+    if (seen.has(e.name)) return false;
+    seen.add(e.name);
+    return true;
+  });
+}
+
+// Pre-built color search data (built once)
+let allColorEntries = null;
+
+function getColorEntries() {
+  if (!allColorEntries) {
+    allColorEntries = buildColorSearchData();
+  }
+  return allColorEntries;
+}
+
+/**
+ * Find a SW color name by its hex value
+ */
+function findColorNameByHex(hex) {
+  const normalizedHex = hex.toLowerCase();
+  const entries = getColorEntries();
+  const match = entries.find(e => e.hex.toLowerCase() === normalizedHex);
+  return match ? match.name : null;
+}
+
+/**
+ * Update the selected color name label for a component
+ */
+function updateSelectedColorLabel(component, name, hex) {
+  const label = document.getElementById(`color-${component}-selected`);
+  if (!label) return;
+  
+  if (name) {
+    label.innerHTML = `<span class="color-swatch-sm" style="background-color:${hex};"></span> ${name}`;
+    label.title = `${name} (${hex})`;
+  } else {
+    label.innerHTML = `<span class="color-swatch-sm" style="background-color:${hex};"></span> ${t('customColor')} (${hex})`;
+    label.title = hex;
+  }
+}
+
+// Track which component the palette modal is selecting for
+let paletteTargetComponent = null;
+
+/**
+ * Render the color palette swatch grid into the modal body
+ * Groups colors by category/family and shows a grid of swatches
+ */
+function renderPaletteSwatches(filter = '') {
+  const body = document.getElementById('color-palette-body');
+  const countEl = document.getElementById('color-palette-count');
+  if (!body) return;
+  
+  body.innerHTML = '';
+  const query = filter.trim().toLowerCase();
+  
+  let totalCount = 0;
+  
+  // Render by category
+  Object.entries(COLOR_CATEGORIES).forEach(([category, colorNames]) => {
+    const categoryColors = [];
+    
+    colorNames.forEach(colorName => {
+      const hex = SHERWIN_WILLIAMS_COLORS[colorName];
+      if (!hex) return;
+      
+      // Apply search filter
+      if (query && !colorName.toLowerCase().includes(query) && !hex.toLowerCase().includes(query) && !category.toLowerCase().includes(query)) {
+        return;
+      }
+      
+      categoryColors.push({ name: colorName, hex });
+    });
+    
+    if (categoryColors.length === 0) return;
+    
+    totalCount += categoryColors.length;
+    
+    // Category header
+    const header = document.createElement('div');
+    header.className = 'palette-category-header';
+    header.textContent = `${category} (${categoryColors.length})`;
+    body.appendChild(header);
+    
+    // Swatch grid
+    const grid = document.createElement('div');
+    grid.className = 'palette-swatch-grid';
+    
+    categoryColors.forEach(color => {
+      const swatch = document.createElement('div');
+      swatch.className = 'palette-swatch';
+      swatch.style.backgroundColor = color.hex;
+      swatch.title = `${color.name}\n${color.hex}`;
+      swatch.dataset.hex = color.hex;
+      swatch.dataset.name = color.name;
+      
+      // Determine text color for contrast
+      const c = color.hex.replace('#', '');
+      const r = parseInt(c.substring(0, 2), 16);
+      const g = parseInt(c.substring(2, 4), 16);
+      const b = parseInt(c.substring(4, 6), 16);
+      const isDark = (r * 0.299 + g * 0.587 + b * 0.114) < 140;
+      swatch.style.color = isDark ? '#fff' : '#222';
+      
+      // Show abbreviated label inside swatch
+      const shortName = color.name.replace(/^SW \d+ /, '');
+      swatch.textContent = shortName;
+      
+      swatch.addEventListener('click', () => {
+        if (!paletteTargetComponent) return;
+        const component = paletteTargetComponent;
+        
+        currentColors[component] = color.hex;
+        const colorInput = document.getElementById(`color-${component}`);
+        if (colorInput) colorInput.value = color.hex;
+        updateSelectedColorLabel(component, color.name, color.hex);
+        saveComponentColors(currentColors);
+        rerenderPreview();
+        closePaletteModal();
+      });
+      
+      grid.appendChild(swatch);
+    });
+    
+    body.appendChild(grid);
+  });
+  
+  if (totalCount === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'palette-empty';
+    empty.textContent = t('noColorsFound');
+    body.appendChild(empty);
+  }
+  
+  if (countEl) {
+    countEl.textContent = `${totalCount} ${t('colorsShown')}`;
+  }
+}
+
+/**
+ * Open the color palette modal for a specific component
+ */
+function openPaletteModal(component) {
+  paletteTargetComponent = component;
+  const modal = document.getElementById('color-palette-modal');
+  const forLabel = document.getElementById('color-palette-for');
+  const searchInput = document.getElementById('color-palette-search');
+  
+  if (!modal) return;
+  
+  // Show which component is being edited
+  const componentLabels = {
+    cabinet: t('cabinetColor'),
+    door: t('doorColor'),
+    drawer: t('drawerColor'),
+    stretcher: t('stretcherColor'),
+    leg: t('legColor')
+  };
+  if (forLabel) forLabel.textContent = `— ${componentLabels[component] || component}`;
+  
+  // Clear search and render all
+  if (searchInput) {
+    searchInput.value = '';
+    searchInput.placeholder = t('searchColor');
+  }
+  
+  renderPaletteSwatches();
+  modal.classList.remove('hidden');
+  
+  // Focus the search input
+  if (searchInput) searchInput.focus();
+}
+
+/**
+ * Close the color palette modal
+ */
+function closePaletteModal() {
+  const modal = document.getElementById('color-palette-modal');
+  if (modal) modal.classList.add('hidden');
+  paletteTargetComponent = null;
+}
+
+/**
+ * Initialize searchable color pickers for all components
+ */
+function populateColorPresets() {
+  // No-op: palette is rendered on demand
+}
+
+/**
+ * Initialize color pickers with saved values and browse palette functionality
+ */
+function initColorPickers() {
+  const components = ['cabinet', 'door', 'drawer', 'stretcher', 'leg'];
+  
+  components.forEach(component => {
+    const colorInput = document.getElementById(`color-${component}`);
+    
+    if (colorInput) {
+      colorInput.value = currentColors[component];
+      
+      colorInput.addEventListener('input', (e) => {
+        currentColors[component] = e.target.value;
+        const matchedName = findColorNameByHex(e.target.value);
+        updateSelectedColorLabel(component, matchedName, e.target.value);
+        saveComponentColors(currentColors);
+        rerenderPreview();
+      });
+    }
+    
+    // Set initial selected color label
+    const initialName = findColorNameByHex(currentColors[component]);
+    updateSelectedColorLabel(component, initialName, currentColors[component]);
+  });
+  
+  // Browse palette buttons
+  document.querySelectorAll('.color-browse-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const component = btn.dataset.component;
+      if (component) openPaletteModal(component);
+    });
+  });
+  
+  // Palette modal: search input
+  const paletteSearch = document.getElementById('color-palette-search');
+  if (paletteSearch) {
+    let debounceTimer = null;
+    paletteSearch.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        renderPaletteSwatches(paletteSearch.value);
+      }, 150);
+    });
+  }
+  
+  // Palette modal: close button
+  const closeBtn = document.getElementById('btn-close-palette');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closePaletteModal);
+  }
+  
+  // Palette modal: backdrop click to close
+  const backdrop = document.querySelector('.color-palette-modal__backdrop');
+  if (backdrop) {
+    backdrop.addEventListener('click', closePaletteModal);
+  }
+}
+
+/**
+ * Initialize 3D preview toggle listener
+ */
+export function init3DPreviewToggle() {
+  // Fill toggle
+  const toggle = document.getElementById('toggle-3d-fill');
+  if (toggle) {
+    toggle.addEventListener('change', rerenderPreview);
+  }
+  
+  // Color settings button
+  const colorSettingsBtn = document.getElementById('btn-color-settings');
+  const colorSettingsPanel = document.getElementById('color-settings-panel');
+  
+  if (colorSettingsBtn && colorSettingsPanel) {
+    colorSettingsBtn.addEventListener('click', () => {
+      colorSettingsPanel.classList.toggle('hidden');
+    });
+  }
+  
+  // Populate and initialize color pickers
+  populateColorPresets();
+  initColorPickers();
+}
 
 /**
  * Show module modal for adding/editing
@@ -45,8 +366,18 @@ export function showModuleModal(module = null, projectSettings = {}) {
     elements.moduleHasBackPanel.checked = module.hasBackPanel ?? true;
     elements.moduleBackType.value = module.backPanelType;
     elements.moduleHasDoors.checked = module.hasDoors || false;
+    elements.moduleDoorType.value = module.doorType || 'overlay';
+    elements.moduleDoorStyle.value = module.doorStyle || 'flat';
+    elements.moduleShakerRailWidth.value = module.shakerRailWidth ?? DEFAULTS.SHAKER_RAIL_WIDTH;
+    elements.moduleShakerStileWidth.value = module.shakerStileWidth ?? DEFAULTS.SHAKER_STILE_WIDTH;
+    elements.moduleShakerPanelThickness.value = module.shakerPanelThickness ?? DEFAULTS.SHAKER_PANEL_THICKNESS;
     elements.moduleDoorGap.value = module.doorGap ?? 2;
     elements.moduleHasDrawers.checked = module.hasDrawers;
+    elements.moduleDrawerFrontType.value = module.drawerFrontType || 'overlay';
+    elements.moduleDrawerFrontStyle.value = module.drawerFrontStyle || 'flat';
+    elements.moduleDrawerShakerRailWidth.value = module.drawerShakerRailWidth ?? DEFAULTS.SHAKER_RAIL_WIDTH;
+    elements.moduleDrawerShakerStileWidth.value = module.drawerShakerStileWidth ?? DEFAULTS.SHAKER_STILE_WIDTH;
+    elements.moduleDrawerShakerPanelThickness.value = module.drawerShakerPanelThickness ?? DEFAULTS.SHAKER_PANEL_THICKNESS;
     elements.moduleDrawerSlideClearance.value = module.drawerSlideClearance ?? DEFAULTS.DRAWER_SLIDE_CLEARANCE;
     elements.moduleDrawerBottomThickness.value = module.drawerBottomThickness || DEFAULTS.DRAWER_BOTTOM_THICKNESS;
     elements.moduleDrawerSpacing.value = module.drawerSpacing ?? DEFAULTS.DRAWER_SPACING;
@@ -70,9 +401,19 @@ export function showModuleModal(module = null, projectSettings = {}) {
     elements.moduleHasBottomStretcher.checked = false;
     elements.moduleStretcherHeight.value = DEFAULTS.STRETCHER_HEIGHT;
     elements.moduleHasDoors.checked = false;
+    elements.moduleDoorType.value = 'overlay';
+    elements.moduleDoorStyle.value = 'flat';
+    elements.moduleShakerRailWidth.value = DEFAULTS.SHAKER_RAIL_WIDTH;
+    elements.moduleShakerStileWidth.value = DEFAULTS.SHAKER_STILE_WIDTH;
+    elements.moduleShakerPanelThickness.value = DEFAULTS.SHAKER_PANEL_THICKNESS;
     elements.moduleDoorGap.value = 2;
     elements.moduleDrawerSlideClearance.value = projectSettings.drawerSlideClearance ?? DEFAULTS.DRAWER_SLIDE_CLEARANCE;
     elements.moduleDrawerSpacing.value = DEFAULTS.DRAWER_SPACING;
+    elements.moduleDrawerFrontType.value = 'overlay';
+    elements.moduleDrawerFrontStyle.value = 'flat';
+    elements.moduleDrawerShakerRailWidth.value = DEFAULTS.SHAKER_RAIL_WIDTH;
+    elements.moduleDrawerShakerStileWidth.value = DEFAULTS.SHAKER_STILE_WIDTH;
+    elements.moduleDrawerShakerPanelThickness.value = DEFAULTS.SHAKER_PANEL_THICKNESS;
     elements.moduleHasBackPanel.checked = true;
   }
   
@@ -82,15 +423,22 @@ export function showModuleModal(module = null, projectSettings = {}) {
   updateBackPanelOptionsVisibility(elements.moduleHasBackPanel.checked);
   updateStretcherOptionsVisibility();
   updateDoorOptionsVisibility(elements.moduleHasDoors.checked);
+  updateShakerOptionsVisibility();
   updateDrawerOptionsVisibility(elements.moduleHasDrawers.checked);
+  updateDrawerShakerOptionsVisibility();
   
   elements.moduleModal.classList.remove('hidden');
   
   // Render 3D preview if editing, after modal is shown
   if (isEdit) {
+    currentPreviewModule = module;
     setTimeout(() => {
-      renderCabinet(module, document.getElementById('module-3d'));
+      const toggle = document.getElementById('toggle-3d-fill');
+      const filled = toggle ? toggle.checked : false;
+      renderCabinet(module, document.getElementById('module-3d'), { filled, colors: currentColors });
     }, 100); // Small delay to ensure modal is rendered
+  } else {
+    currentPreviewModule = null;
   }
 }
 
@@ -240,6 +588,34 @@ export function updateDoorOptionsVisibility(hasDoors) {
 }
 
 /**
+ * Update shaker door options visibility
+ * Shows shaker settings only when door style is 'shaker'
+ */
+export function updateShakerOptionsVisibility() {
+  const elements = getElements();
+  const isShaker = elements.moduleDoorStyle.value === 'shaker';
+  if (isShaker) {
+    elements.shakerOptions.classList.remove('hidden');
+  } else {
+    elements.shakerOptions.classList.add('hidden');
+  }
+}
+
+/**
+ * Update shaker drawer options visibility
+ * Shows shaker settings only when drawer front style is 'shaker'
+ */
+export function updateDrawerShakerOptionsVisibility() {
+  const elements = getElements();
+  const isShaker = elements.moduleDrawerFrontStyle.value === 'shaker';
+  if (isShaker) {
+    elements.drawerShakerOptions.classList.remove('hidden');
+  } else {
+    elements.drawerShakerOptions.classList.add('hidden');
+  }
+}
+
+/**
  * Update stretcher options visibility
  * Shows the stretcher width field if any stretcher is enabled
  */
@@ -379,8 +755,12 @@ function calculateFormBoxHeight() {
 
 /**
  * Calculate recommended door dimensions based on current form values
- * Full overlay doors formula:
- * - Door height = box height (cabinet height minus legs and countertop)
+ * Inset doors formula:
+ * - Door height = box height - 2*structural_thickness - 2*gap
+ * - Door width = (internal_width - (doorCount + 1) * gap) / doorCount
+ * 
+ * Overlay (full overlay) doors formula:
+ * - Door height = box height (covers entire front)
  * - Door width = (cabinet width - (DOOR_GAP × (doorCount - 1))) / doorCount
  *   (gap only between doors, not on edges)
  * 
@@ -391,14 +771,24 @@ function calculateDoorDimensions(doorCount) {
   const elements = getElements();
   const cabinetWidth = parseFloat(elements.moduleWidth.value) || 0;
   const boxHeight = calculateFormBoxHeight();
+  const structuralThickness = parseFloat(elements.moduleStructuralThickness.value) || DEFAULTS.STRUCTURAL_THICKNESS;
+  const doorType = elements.moduleDoorType.value || 'overlay';
+  const doorGap = parseFloat(elements.moduleDoorGap.value) || DEFAULTS.DOOR_GAP;
   
-  // Door height = box height (full overlay, covers entire front)
-  const doorHeight = Math.max(50, boxHeight);
+  let doorHeight, doorWidth;
   
-  // Door width = (cabinet width - gaps between doors) / door count
-  // Gap only between doors (not on edges for full overlay)
-  const gapsBetweenDoors = (doorCount - 1) * DEFAULTS.DOOR_GAP;
-  const doorWidth = Math.max(50, Math.round((cabinetWidth - gapsBetweenDoors) / doorCount));
+  if (doorType === 'inset') {
+    // Inset: doors fit inside the cabinet opening
+    const internalWidth = cabinetWidth - (structuralThickness * 2);
+    doorHeight = Math.max(50, boxHeight - (structuralThickness * 2) - (doorGap * 2));
+    const totalGaps = (doorCount + 1) * doorGap;
+    doorWidth = Math.max(50, Math.round((internalWidth - totalGaps) / doorCount));
+  } else {
+    // Overlay: doors cover the cabinet frame
+    doorHeight = Math.max(50, boxHeight);
+    const gapsBetweenDoors = (doorCount - 1) * doorGap;
+    doorWidth = Math.max(50, Math.round((cabinetWidth - gapsBetweenDoors) / doorCount));
+  }
   
   return { width: doorWidth, height: doorHeight };
 }
@@ -508,9 +898,19 @@ export function getModuleFromForm() {
     hasBackPanel: elements.moduleHasBackPanel.checked,
     backPanelType: elements.moduleBackType.value,
     hasDoors: hasDoors,
+    doorType: hasDoors ? elements.moduleDoorType.value : 'overlay',
+    doorStyle: hasDoors ? elements.moduleDoorStyle.value : 'flat',
+    shakerRailWidth: hasDoors ? parseFloat(elements.moduleShakerRailWidth.value) || DEFAULTS.SHAKER_RAIL_WIDTH : DEFAULTS.SHAKER_RAIL_WIDTH,
+    shakerStileWidth: hasDoors ? parseFloat(elements.moduleShakerStileWidth.value) || DEFAULTS.SHAKER_STILE_WIDTH : DEFAULTS.SHAKER_STILE_WIDTH,
+    shakerPanelThickness: hasDoors ? parseFloat(elements.moduleShakerPanelThickness.value) || DEFAULTS.SHAKER_PANEL_THICKNESS : DEFAULTS.SHAKER_PANEL_THICKNESS,
     doors: hasDoors ? getDoorsFromList() : [],
     doorGap: hasDoors ? parseFloat(elements.moduleDoorGap.value) || 2 : 2,
     hasDrawers: hasDrawers,
+    drawerFrontType: hasDrawers ? elements.moduleDrawerFrontType.value : 'overlay',
+    drawerFrontStyle: hasDrawers ? elements.moduleDrawerFrontStyle.value : 'flat',
+    drawerShakerRailWidth: hasDrawers ? parseFloat(elements.moduleDrawerShakerRailWidth.value) || DEFAULTS.SHAKER_RAIL_WIDTH : DEFAULTS.SHAKER_RAIL_WIDTH,
+    drawerShakerStileWidth: hasDrawers ? parseFloat(elements.moduleDrawerShakerStileWidth.value) || DEFAULTS.SHAKER_STILE_WIDTH : DEFAULTS.SHAKER_STILE_WIDTH,
+    drawerShakerPanelThickness: hasDrawers ? parseFloat(elements.moduleDrawerShakerPanelThickness.value) || DEFAULTS.SHAKER_PANEL_THICKNESS : DEFAULTS.SHAKER_PANEL_THICKNESS,
     drawers: hasDrawers ? getDrawersFromList() : [],
     drawerSlideClearance: hasDrawers ? parseFloat(elements.moduleDrawerSlideClearance.value) || DEFAULTS.DRAWER_SLIDE_CLEARANCE : DEFAULTS.DRAWER_SLIDE_CLEARANCE,
     drawerBottomThickness: hasDrawers ? parseFloat(elements.moduleDrawerBottomThickness.value) || DEFAULTS.DRAWER_BOTTOM_THICKNESS : DEFAULTS.DRAWER_BOTTOM_THICKNESS,

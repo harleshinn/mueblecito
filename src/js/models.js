@@ -2,7 +2,7 @@
  * Data models for projects, modules, and parts
  */
 
-import { DEFAULTS, CABINET_TYPES, BACK_PANEL_TYPES } from './constants.js';
+import { DEFAULTS, CABINET_TYPES, BACK_PANEL_TYPES, DOOR_TYPES, DOOR_STYLES, DRAWER_FRONT_TYPES, DRAWER_FRONT_STYLES } from './constants.js';
 
 /**
  * Generate a unique ID
@@ -79,11 +79,21 @@ export function createModule(data, projectSettings = {}) {
     
     // Doors - array of individual door configurations
     hasDoors: data.hasDoors ?? false,
+    doorType: data.doorType || DOOR_TYPES.OVERLAY,
+    doorStyle: data.doorStyle || DOOR_STYLES.FLAT,
+    shakerRailWidth: data.shakerRailWidth ?? DEFAULTS.SHAKER_RAIL_WIDTH,
+    shakerStileWidth: data.shakerStileWidth ?? DEFAULTS.SHAKER_STILE_WIDTH,
+    shakerPanelThickness: data.shakerPanelThickness ?? DEFAULTS.SHAKER_PANEL_THICKNESS,
     doors: data.doors || [], // Array of { width, height }
     doorGap: data.doorGap ?? 2, // Gap between doors and from edges
     
     // Drawers - array of individual drawer configurations
     hasDrawers: data.hasDrawers || false,
+    drawerFrontType: data.drawerFrontType || DRAWER_FRONT_TYPES.OVERLAY,
+    drawerFrontStyle: data.drawerFrontStyle || DRAWER_FRONT_STYLES.FLAT,
+    drawerShakerRailWidth: data.drawerShakerRailWidth ?? DEFAULTS.SHAKER_RAIL_WIDTH,
+    drawerShakerStileWidth: data.drawerShakerStileWidth ?? DEFAULTS.SHAKER_STILE_WIDTH,
+    drawerShakerPanelThickness: data.drawerShakerPanelThickness ?? DEFAULTS.SHAKER_PANEL_THICKNESS,
     drawers: data.drawers || [], // Array of { height, depth }
     drawerSlideClearance: data.drawerSlideClearance ?? projectSettings.drawerSlideClearance ?? DEFAULTS.DRAWER_SLIDE_CLEARANCE,
     drawerBottomThickness: data.drawerBottomThickness || DEFAULTS.DRAWER_BOTTOM_THICKNESS,

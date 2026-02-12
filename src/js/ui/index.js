@@ -28,8 +28,10 @@ export {
   updateCountertopOptionsVisibility,
   updateBackPanelOptionsVisibility,
   updateDrawerOptionsVisibility,
+  updateDrawerShakerOptionsVisibility,
   updateDrawerRemainingHeight,
   updateDoorOptionsVisibility,
+  updateShakerOptionsVisibility,
   updateStretcherOptionsVisibility,
   clearDrawerList,
   addDrawerRow,
@@ -37,7 +39,8 @@ export {
   clearDoorList,
   addDoorRow,
   getDoorsFromList,
-  getModuleFromForm
+  getModuleFromForm,
+  init3DPreviewToggle
 } from './moduleFormUI.js';
 
 // Results UI

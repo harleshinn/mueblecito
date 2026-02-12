@@ -68,11 +68,23 @@ const elements = {
   doorOptions: null,
   doorList: null,
   btnAddDoor: null,
+  moduleDoorType: null,
+  moduleDoorStyle: null,
   moduleDoorGap: null,
+  shakerOptions: null,
+  moduleShakerRailWidth: null,
+  moduleShakerStileWidth: null,
+  moduleShakerPanelThickness: null,
   
   // Form fields - drawers
   moduleHasDrawers: null,
   drawerOptions: null,
+  moduleDrawerFrontType: null,
+  moduleDrawerFrontStyle: null,
+  drawerShakerOptions: null,
+  moduleDrawerShakerRailWidth: null,
+  moduleDrawerShakerStileWidth: null,
+  moduleDrawerShakerPanelThickness: null,
   drawerList: null,
   btnAddDrawer: null,
   moduleDrawerSlideClearance: null,
@@ -157,11 +169,23 @@ export function initElements() {
   elements.doorOptions = document.getElementById('door-options');
   elements.doorList = document.getElementById('door-list');
   elements.btnAddDoor = document.getElementById('btn-add-door');
+  elements.moduleDoorType = document.getElementById('module-door-type');
+  elements.moduleDoorStyle = document.getElementById('module-door-style');
   elements.moduleDoorGap = document.getElementById('module-door-gap');
+  elements.shakerOptions = document.getElementById('shaker-options');
+  elements.moduleShakerRailWidth = document.getElementById('module-shaker-rail-width');
+  elements.moduleShakerStileWidth = document.getElementById('module-shaker-stile-width');
+  elements.moduleShakerPanelThickness = document.getElementById('module-shaker-panel-thickness');
   
   // Form fields - drawers
   elements.moduleHasDrawers = document.getElementById('module-has-drawers');
   elements.drawerOptions = document.getElementById('drawer-options');
+  elements.moduleDrawerFrontType = document.getElementById('module-drawer-front-type');
+  elements.moduleDrawerFrontStyle = document.getElementById('module-drawer-front-style');
+  elements.drawerShakerOptions = document.getElementById('drawer-shaker-options');
+  elements.moduleDrawerShakerRailWidth = document.getElementById('module-drawer-shaker-rail-width');
+  elements.moduleDrawerShakerStileWidth = document.getElementById('module-drawer-shaker-stile-width');
+  elements.moduleDrawerShakerPanelThickness = document.getElementById('module-drawer-shaker-panel-thickness');
   elements.drawerList = document.getElementById('drawer-list');
   elements.btnAddDrawer = document.getElementById('btn-add-drawer');
   elements.moduleDrawerSlideClearance = document.getElementById('module-drawer-slide-clearance');
