@@ -310,8 +310,41 @@
                 <div class="door-options hidden" id="door-options">
                   <div class="form-row">
                     <div class="form-group">
+                      <label for="module-door-type" data-i18n="doorType">Door Mounting</label>
+                      <select id="module-door-type">
+                        <option value="overlay" data-i18n="doorTypeOverlay">Overlay (over frame)</option>
+                        <option value="inset" data-i18n="doorTypeInset">Inset (inside frame)</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="module-door-style" data-i18n="doorStyle">Door Style</label>
+                      <select id="module-door-style">
+                        <option value="flat" data-i18n="doorStyleFlat">Flat (slab)</option>
+                        <option value="shaker" data-i18n="doorStyleShaker">Shaker (frame + panel)</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
                       <label for="module-door-gap" data-i18n="doorGap">Door Gap (mm)</label>
                       <input type="number" id="module-door-gap" value="2" min="0" step="0.5">
+                    </div>
+                  </div>
+                  <div class="shaker-options hidden" id="shaker-options">
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="module-shaker-rail-width" data-i18n="shakerRailWidth">Rail Width (mm)</label>
+                        <input type="number" id="module-shaker-rail-width" value="60" min="20" step="1">
+                      </div>
+                      <div class="form-group">
+                        <label for="module-shaker-stile-width" data-i18n="shakerStileWidth">Stile Width (mm)</label>
+                        <input type="number" id="module-shaker-stile-width" value="60" min="20" step="1">
+                      </div>
+                      <div class="form-group">
+                        <label for="module-shaker-panel-thickness" data-i18n="shakerPanelThickness">Center Panel</label>
+                        <select id="module-shaker-panel-thickness">
+                          <option value="5.5" selected>5.5 mm</option>
+                          <option value="3">3 mm</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
                   <div class="door-list-header">
@@ -336,6 +369,41 @@
                   </div>
                 </div>
                 <div class="drawer-options hidden" id="drawer-options">
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="module-drawer-front-type" data-i18n="drawerFrontType">Drawer Mounting</label>
+                      <select id="module-drawer-front-type">
+                        <option value="overlay" data-i18n="drawerFrontTypeOverlay">Overlay (over frame)</option>
+                        <option value="inset" data-i18n="drawerFrontTypeInset">Inset (inside frame)</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="module-drawer-front-style" data-i18n="drawerFrontStyle">Drawer Front Style</label>
+                      <select id="module-drawer-front-style">
+                        <option value="flat" data-i18n="drawerFrontStyleFlat">Flat (slab)</option>
+                        <option value="shaker" data-i18n="drawerFrontStyleShaker">Shaker (frame + panel)</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="drawer-shaker-options hidden" id="drawer-shaker-options">
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="module-drawer-shaker-rail-width" data-i18n="drawerShakerRailWidth">Rail Width (mm)</label>
+                        <input type="number" id="module-drawer-shaker-rail-width" value="60" min="20" step="1">
+                      </div>
+                      <div class="form-group">
+                        <label for="module-drawer-shaker-stile-width" data-i18n="drawerShakerStileWidth">Stile Width (mm)</label>
+                        <input type="number" id="module-drawer-shaker-stile-width" value="60" min="20" step="1">
+                      </div>
+                      <div class="form-group">
+                        <label for="module-drawer-shaker-panel-thickness" data-i18n="drawerShakerPanelThickness">Center Panel</label>
+                        <select id="module-drawer-shaker-panel-thickness">
+                          <option value="5.5" selected>5.5 mm</option>
+                          <option value="3">3 mm</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
                   <div class="form-row">
                     <div class="form-group">
                       <label for="module-drawer-slide-clearance" data-i18n="slideClearance">Slide Clearance (mm)</label>
@@ -371,9 +439,84 @@
             </form>
             
             <!-- 3D Module Preview -->
-            <div style="margin-top: 20px;">
-              <h4 data-i18n="3dPreview">3D Preview</h4>
-              <div id="module-3d" style="width: 100%; height: 300px; border: 1px solid #ccc;"></div>
+            <div style="margin-top: 20px; padding: 20px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <h4 data-i18n="3dPreview" style="margin: 0;">3D Preview</h4>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.9rem;">
+                    <input type="checkbox" id="toggle-3d-fill" />
+                    <span data-i18n="fillPanels">Fill panels</span>
+                  </label>
+                  <button type="button" id="btn-color-settings" class="btn btn--small btn--secondary" style="font-size: 0.8rem; padding: 4px 8px;" data-i18n="colorSettings">Colors</button>
+                </div>
+              </div>
+              
+              <!-- Color Settings Panel (hidden by default) -->
+              <div id="color-settings-panel" class="hidden" style="background: #f5f5f5; padding: 12px; border-radius: 6px; margin-bottom: 10px;">
+                <div class="color-settings-grid">
+                  <div class="color-picker-group" data-component="cabinet">
+                    <label data-i18n="cabinetColor">Cabinet</label>
+                    <div class="color-picker-row">
+                      <input type="color" id="color-cabinet" class="color-input" />
+                      <span class="color-selected-name" id="color-cabinet-selected"></span>
+                      <button type="button" class="btn btn--small btn--secondary color-browse-btn" data-component="cabinet" data-i18n="browsePalette">Browse</button>
+                    </div>
+                  </div>
+                  <div class="color-picker-group" data-component="door">
+                    <label data-i18n="doorColor">Doors</label>
+                    <div class="color-picker-row">
+                      <input type="color" id="color-door" class="color-input" />
+                      <span class="color-selected-name" id="color-door-selected"></span>
+                      <button type="button" class="btn btn--small btn--secondary color-browse-btn" data-component="door" data-i18n="browsePalette">Browse</button>
+                    </div>
+                  </div>
+                  <div class="color-picker-group" data-component="drawer">
+                    <label data-i18n="drawerColor">Drawers</label>
+                    <div class="color-picker-row">
+                      <input type="color" id="color-drawer" class="color-input" />
+                      <span class="color-selected-name" id="color-drawer-selected"></span>
+                      <button type="button" class="btn btn--small btn--secondary color-browse-btn" data-component="drawer" data-i18n="browsePalette">Browse</button>
+                    </div>
+                  </div>
+                  <div class="color-picker-group" data-component="stretcher">
+                    <label data-i18n="stretcherColor">Stretchers</label>
+                    <div class="color-picker-row">
+                      <input type="color" id="color-stretcher" class="color-input" />
+                      <span class="color-selected-name" id="color-stretcher-selected"></span>
+                      <button type="button" class="btn btn--small btn--secondary color-browse-btn" data-component="stretcher" data-i18n="browsePalette">Browse</button>
+                    </div>
+                  </div>
+                  <div class="color-picker-group" data-component="leg">
+                    <label data-i18n="legColor">Legs</label>
+                    <div class="color-picker-row">
+                      <input type="color" id="color-leg" class="color-input" />
+                      <span class="color-selected-name" id="color-leg-selected"></span>
+                      <button type="button" class="btn btn--small btn--secondary color-browse-btn" data-component="leg" data-i18n="browsePalette">Browse</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Color Palette Modal -->
+              <div class="color-palette-modal hidden" id="color-palette-modal">
+                <div class="color-palette-modal__backdrop"></div>
+                <div class="color-palette-modal__content">
+                  <div class="color-palette-modal__header">
+                    <h4 data-i18n="colorPalette">Color Palette</h4>
+                    <span class="color-palette-modal__for" id="color-palette-for"></span>
+                    <button type="button" class="btn btn--text color-palette-modal__close" id="btn-close-palette">&times;</button>
+                  </div>
+                  <div class="color-palette-modal__search">
+                    <input type="text" id="color-palette-search" class="color-palette-search-input" autocomplete="off" />
+                    <span class="color-palette-modal__count" id="color-palette-count"></span>
+                  </div>
+                  <div class="color-palette-modal__body" id="color-palette-body">
+                    <!-- Color swatches rendered here by JS -->
+                  </div>
+                </div>
+              </div>
+              
+              <div id="module-3d" style="width: 100%; height: 75vh; border: 1px solid #ccc;"></div>
             </div>
           </div>
         </div>

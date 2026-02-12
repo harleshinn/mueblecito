@@ -113,18 +113,75 @@ export function generateDrawerParts(module) {
       thickness: bottomThickness
     }));
     
-    // Drawer face (visible facade) (1 per drawer)
-    // This is the visible front panel attached to the drawer
-    // Width: cabinet internal width (full width between sides)
-    // Height: faceHeight (the visible drawer front)
-    parts.push(createPart({
-      moduleName: module.name,
-      partName: PART_TYPES.DRAWER_FACE + suffix,
-      quantity: 1 * totalDrawers,
-      width: calculateInternalWidth(module),
-      height: faceHeight,
-      thickness: module.structuralThickness
-    }));
+    // Drawer face (visible facade) - dimensions depend on drawer front type
+    // Inset: fits inside the opening (internal width - gaps)
+    // Overlay: covers the full cabinet front width for that drawer area
+    const drawerFrontType = module.drawerFrontType || 'overlay';
+    const drawerSpacing = module.drawerSpacing ?? DEFAULTS.DRAWER_SPACING;
+    let faceWidth, adjustedFaceHeight;
+    
+    if (drawerFrontType === 'inset') {
+      // Inset: face fits inside the cabinet opening between side panels
+      faceWidth = calculateInternalWidth(module) - (2 * drawerSpacing);
+      adjustedFaceHeight = faceHeight - (2 * drawerSpacing);
+    } else {
+      // Overlay: face covers the full cabinet width
+      faceWidth = module.width;
+      adjustedFaceHeight = faceHeight;
+    }
+    
+    const isShaker = module.drawerFrontStyle === 'shaker';
+    
+    if (isShaker) {
+      // Shaker drawer face: stiles + rails + center panel
+      const railW = module.drawerShakerRailWidth || DEFAULTS.SHAKER_RAIL_WIDTH;
+      const stileW = module.drawerShakerStileWidth || DEFAULTS.SHAKER_STILE_WIDTH;
+      const panelThickness = module.drawerShakerPanelThickness || DEFAULTS.SHAKER_PANEL_THICKNESS;
+      const tenonDepth = DEFAULTS.SHAKER_TENON_DEPTH;
+      
+      // Stiles: full face height, stileWidth wide (2 per face)
+      parts.push(createPart({
+        moduleName: module.name,
+        partName: PART_TYPES.DRAWER_FACE_STILE + suffix,
+        quantity: 2 * totalDrawers,
+        width: stileW,
+        height: adjustedFaceHeight,
+        thickness: module.structuralThickness
+      }));
+      
+      // Rails: span between stiles (2 per face)
+      const railLength = faceWidth - (2 * stileW);
+      parts.push(createPart({
+        moduleName: module.name,
+        partName: PART_TYPES.DRAWER_FACE_RAIL + suffix,
+        quantity: 2 * totalDrawers,
+        width: railLength,
+        height: railW,
+        thickness: module.structuralThickness
+      }));
+      
+      // Center panel: fits inside the frame with tenon overlap
+      const panelWidth = faceWidth - (2 * stileW) + (2 * tenonDepth);
+      const panelHeight = adjustedFaceHeight - (2 * railW) + (2 * tenonDepth);
+      parts.push(createPart({
+        moduleName: module.name,
+        partName: PART_TYPES.DRAWER_FACE_PANEL + suffix,
+        quantity: 1 * totalDrawers,
+        width: panelWidth,
+        height: panelHeight,
+        thickness: panelThickness
+      }));
+    } else {
+      // Flat drawer face: single slab panel
+      parts.push(createPart({
+        moduleName: module.name,
+        partName: PART_TYPES.DRAWER_FACE + suffix,
+        quantity: 1 * totalDrawers,
+        width: faceWidth,
+        height: adjustedFaceHeight,
+        thickness: module.structuralThickness
+      }));
+    }
     
     groupIndex++;
   }

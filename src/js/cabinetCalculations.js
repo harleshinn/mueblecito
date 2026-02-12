@@ -225,9 +225,9 @@ function generateStretchers(module) {
 /**
  * Generate door panels
  * Each door has individually configurable width and height
+ * Supports flat (slab) and shaker (frame + panel) styles
  * 
  * @param {Object} module - Module piece
- * @param {number} boxHeight - Calculated box height
  * @returns {Array} - Array of door parts
  */
 function generateDoors(module) {
@@ -237,6 +237,8 @@ function generateDoors(module) {
   if (doors.length === 0) {
     return parts;
   }
+  
+  const isShaker = module.doorStyle === 'shaker';
   
   // Group doors by unique dimension combinations to reduce part entries
   const dimensionGroups = new Map();
@@ -259,14 +261,56 @@ function generateDoors(module) {
     const totalDoors = count * module.quantity;
     const suffix = dimensionGroups.size > 1 ? ` (${groupIndex})` : '';
     
-    parts.push(createPart({
-      moduleName: module.name,
-      partName: PART_TYPES.DOOR + suffix,
-      quantity: totalDoors,
-      width: width,
-      height: height,
-      thickness: module.structuralThickness
-    }));
+    if (isShaker) {
+      // Shaker door: stiles + rails + center panel
+      const railW = module.shakerRailWidth || DEFAULTS.SHAKER_RAIL_WIDTH;
+      const stileW = module.shakerStileWidth || DEFAULTS.SHAKER_STILE_WIDTH;
+      const panelThickness = module.shakerPanelThickness || DEFAULTS.SHAKER_PANEL_THICKNESS;
+      const tenonDepth = DEFAULTS.SHAKER_TENON_DEPTH;
+      
+      // Stiles: full door height, stileWidth wide (2 per door)
+      parts.push(createPart({
+        moduleName: module.name,
+        partName: PART_TYPES.DOOR_STILE + suffix,
+        quantity: 2 * totalDoors,
+        width: stileW,
+        height: height,
+        thickness: module.structuralThickness
+      }));
+      
+      // Rails: span between stiles, railWidth tall (2 per door)
+      const railLength = width - (2 * stileW);
+      parts.push(createPart({
+        moduleName: module.name,
+        partName: PART_TYPES.DOOR_RAIL + suffix,
+        quantity: 2 * totalDoors,
+        width: railLength,
+        height: railW,
+        thickness: module.structuralThickness
+      }));
+      
+      // Center panel: fits inside the frame with tenon overlap
+      const panelWidth = width - (2 * stileW) + (2 * tenonDepth);
+      const panelHeight = height - (2 * railW) + (2 * tenonDepth);
+      parts.push(createPart({
+        moduleName: module.name,
+        partName: PART_TYPES.DOOR_PANEL + suffix,
+        quantity: 1 * totalDoors,
+        width: panelWidth,
+        height: panelHeight,
+        thickness: panelThickness
+      }));
+    } else {
+      // Flat door: single slab panel
+      parts.push(createPart({
+        moduleName: module.name,
+        partName: PART_TYPES.DOOR + suffix,
+        quantity: totalDoors,
+        width: width,
+        height: height,
+        thickness: module.structuralThickness
+      }));
+    }
     
     groupIndex++;
   }

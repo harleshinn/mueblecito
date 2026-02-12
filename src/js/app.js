@@ -27,7 +27,9 @@ import {
   updateBackPanelOptionsVisibility,
   updateStretcherOptionsVisibility,
   updateDoorOptionsVisibility,
+  updateShakerOptionsVisibility,
   updateDrawerOptionsVisibility,
+  updateDrawerShakerOptionsVisibility,
   updateDrawerRemainingHeight,
   addDoorRow,
   addDrawerRow,
@@ -36,7 +38,8 @@ import {
   renderPanelDiagrams,
   renderPartsTable,
   showResults,
-  exportPartsToCSV
+  exportPartsToCSV,
+  init3DPreviewToggle
 } from './ui/index.js';
 
 // Application State
@@ -53,6 +56,9 @@ function init() {
   
   // Initialize DOM elements
   initElements();
+  
+  // Initialize 3D preview toggle
+  init3DPreviewToggle();
   
   // Set language switcher value and apply translations
   const langSwitcher = document.getElementById('language-switcher');
@@ -207,6 +213,11 @@ function setupEventListeners() {
     updateDoorOptionsVisibility(e.target.checked);
   });
   
+  // Door style change (show/hide shaker options)
+  elements.moduleDoorStyle.addEventListener('change', () => {
+    updateShakerOptionsVisibility();
+  });
+  
   // Add door button
   elements.btnAddDoor.addEventListener('click', () => {
     addDoorRow();
@@ -215,6 +226,11 @@ function setupEventListeners() {
   // Has drawers checkbox
   elements.moduleHasDrawers.addEventListener('change', (e) => {
     updateDrawerOptionsVisibility(e.target.checked);
+  });
+  
+  // Drawer front style change (show/hide drawer shaker options)
+  elements.moduleDrawerFrontStyle.addEventListener('change', () => {
+    updateDrawerShakerOptionsVisibility();
   });
   
   // Add drawer button
